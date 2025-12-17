@@ -1,0 +1,8 @@
+pyttsx3
+pygame
+gtts
+edge_tts
+args_utils
+ffmpeg-python
+pydub
+mutagen

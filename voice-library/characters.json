@@ -1,0 +1,85 @@
+[
+    {
+        "ReferenceID": 1,
+        "Alias": "Narrator - Deep",
+        "Engine": "edge-tts",
+        "VoiceID": 120,
+        "ShortName": "en-US-GuyNeural",
+        "Gender": "Male",
+        "Locale": "en-US",
+        "Description": "Standard narration voice, slightly slowed and deepened.",
+        "SampleText": "In a world where text becomes speech...",
+        "Variations": {
+            "Calm": {
+                "Rate": "-5%",
+                "Pitch": "-10Hz",
+                "Volume": "+0%",
+                "Style": "general",
+                "Image": ""
+            },
+            "Stressed": {
+                "Rate": "+10%",
+                "Pitch": "+5Hz",
+                "Volume": "+10%",
+                "Style": "unfriendly",
+                "Image": ""
+            },
+            "Whisper": {
+                "Rate": "-10%",
+                "Pitch": "+0Hz",
+                "Volume": "-20%",
+                "Style": "whispering",
+                "Image": ""
+            },
+            "Angry": {
+                "Rate": "+15%",
+                "Pitch": "+10Hz",
+                "Volume": "+20%",
+                "Style": "angry",
+                "Image": ""
+            },
+            "Loud": {
+                "Rate": "+0%",
+                "Pitch": "+0Hz",
+                "Volume": "+30%",
+                "Style": "shouting",
+                "Image": ""
+            },
+            "Depressed": {
+                "Rate": "-15%",
+                "Pitch": "-5Hz",
+                "Volume": "-10%",
+                "Style": "sad",
+                "Image": ""
+            },
+            "Frustrated": {
+                "Rate": "+5%",
+                "Pitch": "+5Hz",
+                "Volume": "+10%",
+                "Style": "unfriendly",
+                "Image": ""
+            },
+            "Cheerful": {
+                "Rate": "+10%",
+                "Pitch": "+5Hz",
+                "Volume": "+5%",
+                "Style": "cheerful",
+                "Image": ""
+            },
+            "Inside Voice": {
+                "Rate": "-5%",
+                "Pitch": "-5Hz",
+                "Volume": "-15%",
+                "Style": "general",
+                "Image": ""
+            },
+            "Desperate": {
+                "Rate": "+20%",
+                "Pitch": "+15Hz",
+                "Volume": "+15%",
+                "Style": "terrified",
+                "Image": ""
+            }
+        }
+    }
+]
