@@ -5,7 +5,7 @@
 # Responsibility: Create a new character entry in voice-library/characters.json.
 # Usage: python save_character.py --alias "Name" --voice-id ID [options]
 # Examples:
-#   python save_character.py --alias "Narrator" --voice-id 120 --pitch "-5Hz" --rate "-5%"
+#   python src/save_character.py --alias "Yoda" --voice-id 210 --settings voice-library/always-with-you-what-cant-be-done/settings.json
 # ----------------------
 
 # Copyright (C) 2025 steve.rock@wheelhouser.com
@@ -37,7 +37,7 @@ import sys
 import re
 import args_utils
 
-VOICES_FILE = "/home/user/projects/Text-to-Speech/voices.json"
+VOICES_FILE = "/home/user/projects/Text-to-Speech/src/voices.json"
 LIBRARY_FILE = "/home/user/projects/Text-to-Speech/voice-library/characters.json"
 
 # Offsets relative to the "Calm" (Baseline) settings
@@ -46,7 +46,7 @@ VARIATION_TEMPLATES = {
     "Calm":         (0, 0, 0, "general"),
     "Stressed":     (10, 5, 10, "unfriendly"),
     "Whisper":      (-10, 0, -20, "whispering"),
-    "Angry":        (15, 10, 20, "angry"),
+    "Angry":        (15, 0, 20, "angry"),
     "Loud":         (0, 0, 30, "shouting"),
     "Depressed":    (-15, -5, -10, "sad"),
     "Frustrated":   (5, 5, 10, "unfriendly"),
@@ -78,12 +78,30 @@ def main():
     parser.add_argument("--description", default="", help="Description of the character")
     parser.add_argument("--sample-text", default="Hello, I am ready to speak.", help="Default sample text")
     parser.add_argument("--engine", default="edge-tts", help="TTS Engine (default: edge-tts)")
+    parser.add_argument("--settings", help="Path to a settings.json file (or directory) to load pitch/rate from")
     
     # Baseline settings (Calm)
     args_utils.add_pitch_rate_args(parser)
     args_utils.add_volume_arg(parser)
     
     args = parser.parse_args()
+
+    # 0. Load Settings from File if provided
+    if args.settings:
+        settings_path = args.settings
+        if os.path.isdir(settings_path):
+            settings_path = os.path.join(settings_path, "settings.json")
+            
+        if os.path.exists(settings_path):
+            print(f"Loading settings from {settings_path}...")
+            with open(settings_path, 'r', encoding='utf-8') as f:
+                settings_data = json.load(f)
+                args.pitch = settings_data.get("pitch", args.pitch)
+                args.rate = settings_data.get("rate", args.rate)
+                args.volume = settings_data.get("volume", args.volume)
+                args.sample_text = settings_data.get("text", args.sample_text)
+        else:
+            print(f"Warning: Settings file not found at {settings_path}")
 
     # 1. Load Voice Data
     if not os.path.exists(VOICES_FILE):
@@ -149,6 +167,11 @@ def main():
         "Locale": voice_data["Locale"],
         "Description": args.description,
         "SampleText": args.sample_text,
+        "Baseline": {
+            "Rate": args.rate,
+            "Pitch": args.pitch,
+            "Volume": args.volume
+        },
         "Variations": variations
     }
 

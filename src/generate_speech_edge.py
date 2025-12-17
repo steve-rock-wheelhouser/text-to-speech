@@ -53,6 +53,7 @@ async def main():
     parser.add_argument("--list-voices", action="store_true", help="List available voices and exit")
     parser.add_argument("--json", action="store_true", help="Output voices as JSON (use with --list-voices)")
     args_utils.add_pitch_rate_args(parser)
+    args_utils.add_volume_arg(parser)
     parser.add_argument("--play", action="store_true", help="Automatically play the generated audio")
     args = parser.parse_args()
 
@@ -79,9 +80,10 @@ async def main():
     # 2. Generate Audio
     print("Connecting to Edge TTS...")
     print(f"Voice: {args.voice}")
+    print(f"Params: Pitch={args.pitch}, Rate={args.rate}, Volume={args.volume}")
     
     try:
-        communicate = edge_tts.Communicate(text, args.voice, pitch=args.pitch, rate=args.rate)
+        communicate = edge_tts.Communicate(text, args.voice, pitch=args.pitch, rate=args.rate, volume=args.volume)
         await communicate.save(outfile)
         print(f"Audio saved to: {outfile}")
 

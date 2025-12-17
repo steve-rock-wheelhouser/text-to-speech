@@ -81,5 +81,93 @@
                 "Image": ""
             }
         }
+    },
+    {
+        "ReferenceID": 2,
+        "Alias": "Yoda",
+        "Engine": "edge-tts",
+        "VoiceID": 210,
+        "ShortName": "mr-IN-ManoharNeural",
+        "Gender": "Male",
+        "Locale": "mr-IN",
+        "Description": "",
+        "SampleText": "Always with you what can't be done...",
+        "Baseline": {
+            "Rate": "-20%",
+            "Pitch": "-10Hz",
+            "Volume": "+0%"
+        },
+        "Variations": {
+            "Calm": {
+                "Rate": "-20%",
+                "Pitch": "-10Hz",
+                "Volume": "+0%",
+                "Style": "general",
+                "Image": ""
+            },
+            "Stressed": {
+                "Rate": "-10%",
+                "Pitch": "-5Hz",
+                "Volume": "+10%",
+                "Style": "unfriendly",
+                "Image": ""
+            },
+            "Whisper": {
+                "Rate": "-30%",
+                "Pitch": "-10Hz",
+                "Volume": "-20%",
+                "Style": "whispering",
+                "Image": ""
+            },
+            "Angry": {
+                "Rate": "+15%",
+                "Pitch": "+0Hz",
+                "Volume": "+20%",
+                "Style": "angry",
+                "Image": ""
+            },
+            "Loud": {
+                "Rate": "-20%",
+                "Pitch": "-10Hz",
+                "Volume": "+30%",
+                "Style": "shouting",
+                "Image": ""
+            },
+            "Depressed": {
+                "Rate": "-35%",
+                "Pitch": "-15Hz",
+                "Volume": "-10%",
+                "Style": "sad",
+                "Image": ""
+            },
+            "Frustrated": {
+                "Rate": "-15%",
+                "Pitch": "-5Hz",
+                "Volume": "+10%",
+                "Style": "unfriendly",
+                "Image": ""
+            },
+            "Cheerful": {
+                "Rate": "-10%",
+                "Pitch": "-5Hz",
+                "Volume": "+5%",
+                "Style": "cheerful",
+                "Image": ""
+            },
+            "Inside Voice": {
+                "Rate": "-25%",
+                "Pitch": "-15Hz",
+                "Volume": "-15%",
+                "Style": "general",
+                "Image": ""
+            },
+            "Desperate": {
+                "Rate": "+0%",
+                "Pitch": "+5Hz",
+                "Volume": "+15%",
+                "Style": "terrified",
+                "Image": ""
+            }
+        }
     }
 ]

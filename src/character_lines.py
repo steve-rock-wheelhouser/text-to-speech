@@ -35,7 +35,7 @@ import argparse
 import json
 import os
 import subprocess
-import sys
+import sys 
 
 # Path to the characters database
 CHARACTERS_FILE = "/home/user/projects/Text-to-Speech/voice-library/characters.json"
@@ -68,6 +68,7 @@ def main():
     parser.add_argument("--lines", required=True, help="Text content to generate")
     parser.add_argument("--output-dir", required=True, help="Base output directory")
     parser.add_argument("--file-name", required=True, help="Output filename (without extension)")
+    parser.add_argument("--play", action="store_true", help="Automatically play the generated audio")
 
     args = parser.parse_args()
 
@@ -88,8 +89,12 @@ def main():
         sys.exit(1)
 
     var_settings = variations[args.variation]
+    
     pitch = var_settings.get("Pitch", "+0Hz")
     rate = var_settings.get("Rate", "+0%")
+    volume = var_settings.get("Volume", "+0%")
+
+    print(f"Sending to generator: Pitch={pitch}, Rate={rate}, Volume={volume}")
 
     # Prepare output paths
     full_output_dir = os.path.join(args.output_dir, args.variation)
@@ -101,7 +106,9 @@ def main():
     script_dir = os.path.dirname(os.path.abspath(__file__))
     gen_script = os.path.join(script_dir, "generate_speech_edge.py")
     
-    cmd = [sys.executable, gen_script, args.lines, output_file, "--voice", voice, "--pitch", pitch, "--rate", rate]
+    cmd = [sys.executable, gen_script, args.lines, output_file, "--voice", voice, f"--pitch={pitch}", f"--rate={rate}", f"--volume={volume}"]
+    if args.play:
+        cmd.append("--play")
     subprocess.run(cmd, check=True)
 
 if __name__ == "__main__":
