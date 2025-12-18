@@ -1,14 +1,13 @@
 [Desktop Entry]
 Type=Application
-Name=Image Inpainter
-GenericName=Image Editor
-Comment=Remove unwanted objects from images using AI-powered inpainting
-Exec=image-inpainter %F
-TryExec=image-inpainter
-Icon=com.wheelhouser.image_inpainter
+Name=Text to Speech
+GenericName=Text to Speech Tool
+Comment=Convert text to speech using Microsoft Edge TTS
+Exec=text-to-speech
+TryExec=text-to-speech
+Icon=com.wheelhouser.text_to_speech
 Terminal=false
-Categories=Graphics;
+Categories=AudioVideo;Utility;
 StartupNotify=true
-StartupWMClass=image-inpainter
-MimeType=image/png;image/jpeg;image/webp;image/svg+xml;image/tiff;image/bmp;
-Keywords=image;edit;remove;background;photo;inpainting;ai;
+StartupWMClass=text-to-speech
+Keywords=text;speech;tts;audio;voice;

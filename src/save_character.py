@@ -44,6 +44,7 @@ LIBRARY_FILE = "/home/user/projects/Text-to-Speech/voice-library/characters.json
 # Format: (Rate Offset, Pitch Offset, Volume Offset, Style)
 VARIATION_TEMPLATES = {
     "Calm":         (0, 0, 0, "general"),
+    "Excited":      (10, 2, 5, "cheerful"),
     "Stressed":     (10, 5, 10, "unfriendly"),
     "Whisper":      (-10, 0, -20, "whispering"),
     "Angry":        (15, 0, 20, "angry"),

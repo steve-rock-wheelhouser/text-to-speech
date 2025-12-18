@@ -37,9 +37,32 @@ import sys
 import time
 import subprocess
 import shutil
+import signal
 import args_utils
 
+child_process = None
+
+def signal_handler(sig, frame):
+    """Gracefully terminate the child process or pygame."""
+    global child_process
+    if child_process and child_process.poll() is None:
+        child_process.terminate()
+    
+    try:
+        import pygame
+        if pygame.mixer.get_init() and pygame.mixer.music.get_busy():
+            pygame.mixer.music.stop()
+    except (ImportError, pygame.error):
+        pass
+    
+    sys.exit(0)
+
+# Register the signal handler for termination signals
+signal.signal(signal.SIGTERM, signal_handler)
+signal.signal(signal.SIGINT, signal_handler)
+
 def play_audio(file_path):
+    global child_process
     file_path = os.path.abspath(file_path)
     if not os.path.exists(file_path):
         print(f"Error: File not found: {file_path}")
@@ -82,18 +105,20 @@ def play_audio(file_path):
     for player_cmd, args in players:
         if shutil.which(player_cmd):
             try:
-                subprocess.run([player_cmd] + args + [file_path], check=True)
+                child_process = subprocess.Popen([player_cmd] + args + [file_path], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                child_process.wait()
                 return
-            except subprocess.CalledProcessError:
+            except (subprocess.CalledProcessError, FileNotFoundError):
                 continue
 
     # 3. Flatpak Fallback (For VS Code sandbox)
     if shutil.which("flatpak-spawn"):
         print("Detecting Flatpak environment. Attempting to play on host...")
         try:
-            subprocess.run(["flatpak-spawn", "--host", "paplay", file_path], check=True)
+            child_process = subprocess.Popen(["flatpak-spawn", "--host", "paplay", file_path], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            child_process.wait()
             return
-        except subprocess.CalledProcessError:
+        except (subprocess.CalledProcessError, FileNotFoundError):
             print("Failed to play via flatpak-spawn.")
 
     print("Error: Could not play audio. Please install 'pygame' (pip install pygame).")

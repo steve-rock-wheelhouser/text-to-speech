@@ -1,35 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <component type="desktop-application">
-  <id>com.wheelhouser.image_inpainter.desktop</id>
+  <id>com.wheelhouser.text_to_speech</id>
   <metadata_license>CC0-1.0</metadata_license>
   <project_license>GPL-3.0</project_license>
 
-  <name>Image Inpainter</name>
-  <summary>Remove unwanted objects from images using AI-powered inpainting.</summary>
+  <name>Text to Speech</name>
+  <summary>Convert text to speech using Microsoft Edge TTS</summary>
 
   <description>
     <p>
-      Image Inpainter is a desktop application for removing unwanted objects from images using advanced AI techniques. It provides an easy-to-use interface for inpainting images with high accuracy.
-      The application is designed for photographers, designers, and content creators who need to clean up images.
+      Text to Speech is a desktop application for converting text into high-quality audio using Microsoft Edge TTS. It provides an easy-to-use interface for generating speech from text with customizable voices, pitch, rate, and volume.
+      The application is designed for content creators, educators, and anyone needing to produce audio from text.
     </p>
     <p>
       Key features:
     </p>
     <ul>
-      <li>AI-powered object removal and inpainting</li>
-      <li>Batch processing multiple images</li>
+      <li>Microsoft Edge TTS integration for natural-sounding voices</li>
+      <li>Character library with predefined voice variations</li>
+      <li>Batch processing for multiple text inputs</li>
       <li>User-friendly graphical interface</li>
     </ul>
     <p>
-      The tool is optimized for accuracy and speed on modern desktops and can be used
-      entirely offline once installed.
+      The tool supports various output formats and can be used entirely offline once installed.
     </p>
   </description>
 
-  <launchable type="desktop-id">com.wheelhouser.image_inpainter.desktop</launchable>
+  <launchable type="desktop-id">com.wheelhouser.text_to_speech.desktop</launchable>
 
   <provides>
-    <binary>image-inpainter</binary>
+    <binary>text-to-speech</binary>
   </provides>
 
   <developer id="com.wheelhouser">
@@ -39,17 +39,16 @@
   </developer>
 
   <keywords>
-    <keyword xml:lang="en">background</keyword>
-    <keyword xml:lang="en">remove</keyword>
-    <keyword xml:lang="en">photo</keyword>
-    <keyword xml:lang="en">image</keyword>
-    <keyword xml:lang="en">alpha</keyword>
-    <keyword xml:lang="en">matting</keyword>
+    <keyword xml:lang="en">text</keyword>
+    <keyword xml:lang="en">speech</keyword>
+    <keyword xml:lang="en">tts</keyword>
+    <keyword xml:lang="en">audio</keyword>
+    <keyword xml:lang="en">voice</keyword>
   </keywords>
 
   <url type="homepage">https://wheelhouser.com</url>
-  <url type="bugtracker">https://github.com/steve-rock-wheelhouser/image-inpainter/issues</url>
-  <url type="vcs-browser">https://github.com/steve-rock-wheelhouser/image-inpainter</url>
+  <url type="bugtracker">https://github.com/steve-rock-wheelhouser/text-to-speech/issues</url>
+  <url type="vcs-browser">https://github.com/steve-rock-wheelhouser/text-to-speech</url>
 
   <content_rating type="oars-1.1">
     <content_attribute id="violence-cartoon">none</content_attribute>
@@ -74,25 +73,25 @@
 
   <screenshots>
     <screenshot type="default">
-      <caption xml:lang="en">Main window showing preview and tools</caption>
-      <image>https://raw.githubusercontent.com/steve-rock-wheelhouser/image-inpainter/main/assets/screenshots/screenshot.png</image>
+      <caption xml:lang="en">Main window showing text input and voice settings</caption>
+      <image>https://raw.githubusercontent.com/steve-rock-wheelhouser/text-to-speech/main/assets/screenshots/screenshot.png</image>
     </screenshot>
     <screenshot>
-      <caption xml:lang="en">Batch processing multiple images</caption>
-      <image>https://raw.githubusercontent.com/steve-rock-wheelhouser/image-inpainter/main/assets/screenshots/screenshot-01.png</image>
+      <caption xml:lang="en">Character library with voice variations</caption>
+      <image>https://raw.githubusercontent.com/steve-rock-wheelhouser/text-to-speech/main/assets/screenshots/screenshot-01.png</image>
     </screenshot>
     <screenshot>
-      <caption xml:lang="en">Optional feather and edge smoothing controls</caption>
-      <image>https://raw.githubusercontent.com/steve-rock-wheelhouser/image-inpainter/main/assets/screenshots/screenshot-02.png</image>
+      <caption xml:lang="en">Playback tab for reviewing generated audio</caption>
+      <image>https://raw.githubusercontent.com/steve-rock-wheelhouser/text-to-speech/main/assets/screenshots/screenshot-02.png</image>
     </screenshot>
   </screenshots>
 
   <releases>
-    <release version="0.1.0" date="2025-12-14">
+    <release version="0.1.0" date="2025-12-18">
       <description>
-        <p xml:lang="en">Initial release: AI-powered object removal, batch mode, and user-friendly interface.</p>
+        <p xml:lang="en">Initial release: Text to speech conversion, character library, and audio playback.</p>
       </description>
-      <url>https://github.com/steve-rock-wheelhouser/image-inpainter/releases/tag/v0.1.0</url>
+      <url>https://github.com/steve-rock-wheelhouser/text-to-speech/releases/tag/v0.1.0</url>
     </release>
   </releases>
 

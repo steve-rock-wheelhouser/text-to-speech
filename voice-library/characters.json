@@ -9,10 +9,15 @@
         "Locale": "en-US",
         "Description": "Standard narration voice, slightly slowed and deepened.",
         "SampleText": "In a world where text becomes speech...",
+        "Baseline": {
+            "Rate": "-15%",
+            "Pitch": "-20Hz",
+            "Volume": "+0%"
+        },
         "Variations": {
             "Calm": {
-                "Rate": "-5%",
-                "Pitch": "-10Hz",
+                "Rate": "-30%",
+                "Pitch": "-22Hz",
                 "Volume": "+0%",
                 "Style": "general",
                 "Image": ""
@@ -46,8 +51,8 @@
                 "Image": ""
             },
             "Depressed": {
-                "Rate": "-15%",
-                "Pitch": "-5Hz",
+                "Rate": "-16%",
+                "Pitch": "+0Hz",
                 "Volume": "-10%",
                 "Style": "sad",
                 "Image": ""
@@ -99,7 +104,7 @@
         },
         "Variations": {
             "Calm": {
-                "Rate": "-20%",
+                "Rate": "+45%",
                 "Pitch": "-10Hz",
                 "Volume": "+0%",
                 "Style": "general",
@@ -163,6 +168,1234 @@
             },
             "Desperate": {
                 "Rate": "+0%",
+                "Pitch": "+5Hz",
+                "Volume": "+15%",
+                "Style": "terrified",
+                "Image": ""
+            }
+        }
+    },
+    {
+        "ReferenceID": 3,
+        "Alias": "Bruno",
+        "Engine": "edge-tts",
+        "VoiceID": 248,
+        "ShortName": "es-CO-GonzaloNeural",
+        "Gender": "Male",
+        "Locale": "es-CO",
+        "Description": "Suave Spanaird who seduces women",
+        "SampleText": "Hey Red, why don't you ditch the squares and hang out with me?\nAll right all right all right!",
+        "Baseline": {
+            "Rate": "-5%",
+            "Pitch": "-15Hz",
+            "Volume": "+0%"
+        },
+        "Variations": {
+            "Calm": {
+                "Rate": "-5%",
+                "Pitch": "-15Hz",
+                "Volume": "+0%",
+                "Style": "general",
+                "Image": ""
+            },
+            "Stressed": {
+                "Rate": "+5%",
+                "Pitch": "-10Hz",
+                "Volume": "+10%",
+                "Style": "unfriendly",
+                "Image": ""
+            },
+            "Whisper": {
+                "Rate": "-15%",
+                "Pitch": "-15Hz",
+                "Volume": "-20%",
+                "Style": "whispering",
+                "Image": ""
+            },
+            "Angry": {
+                "Rate": "+10%",
+                "Pitch": "-15Hz",
+                "Volume": "+20%",
+                "Style": "angry",
+                "Image": ""
+            },
+            "Loud": {
+                "Rate": "-5%",
+                "Pitch": "-15Hz",
+                "Volume": "+30%",
+                "Style": "shouting",
+                "Image": ""
+            },
+            "Depressed": {
+                "Rate": "-20%",
+                "Pitch": "-20Hz",
+                "Volume": "-10%",
+                "Style": "sad",
+                "Image": ""
+            },
+            "Frustrated": {
+                "Rate": "+0%",
+                "Pitch": "-10Hz",
+                "Volume": "+10%",
+                "Style": "unfriendly",
+                "Image": ""
+            },
+            "Cheerful": {
+                "Rate": "+5%",
+                "Pitch": "-10Hz",
+                "Volume": "+5%",
+                "Style": "cheerful",
+                "Image": ""
+            },
+            "Inside Voice": {
+                "Rate": "-10%",
+                "Pitch": "-20Hz",
+                "Volume": "-15%",
+                "Style": "general",
+                "Image": ""
+            },
+            "Desperate": {
+                "Rate": "+15%",
+                "Pitch": "+0Hz",
+                "Volume": "+15%",
+                "Style": "terrified",
+                "Image": ""
+            }
+        }
+    },
+    {
+        "ReferenceID": 4,
+        "Alias": "Clara",
+        "Engine": "edge-tts",
+        "VoiceID": 80,
+        "ShortName": "en-CA-ClaraNeural",
+        "Gender": "Female",
+        "Locale": "en-CA",
+        "Description": "Savvy, strong, well-spoken woman.",
+        "SampleText": "Landscape of beauty and elegance!",
+        "Baseline": {
+            "Rate": "+2%",
+            "Pitch": "-3Hz",
+            "Volume": "-5%"
+        },
+        "Variations": {
+            "Calm": {
+                "Rate": "+2%",
+                "Pitch": "-3Hz",
+                "Volume": "-5%",
+                "Style": "general",
+                "Image": ""
+            },
+            "Excited": {
+                "Rate": "+12%",
+                "Pitch": "-1Hz",
+                "Volume": "+0%",
+                "Style": "cheerful",
+                "Image": ""
+            },
+            "Stressed": {
+                "Rate": "+12%",
+                "Pitch": "+2Hz",
+                "Volume": "+5%",
+                "Style": "unfriendly",
+                "Image": ""
+            },
+            "Whisper": {
+                "Rate": "-8%",
+                "Pitch": "-3Hz",
+                "Volume": "-25%",
+                "Style": "whispering",
+                "Image": ""
+            },
+            "Angry": {
+                "Rate": "+17%",
+                "Pitch": "-3Hz",
+                "Volume": "+15%",
+                "Style": "angry",
+                "Image": ""
+            },
+            "Loud": {
+                "Rate": "+2%",
+                "Pitch": "-3Hz",
+                "Volume": "+25%",
+                "Style": "shouting",
+                "Image": ""
+            },
+            "Depressed": {
+                "Rate": "-13%",
+                "Pitch": "-8Hz",
+                "Volume": "-15%",
+                "Style": "sad",
+                "Image": ""
+            },
+            "Frustrated": {
+                "Rate": "+7%",
+                "Pitch": "+2Hz",
+                "Volume": "+5%",
+                "Style": "unfriendly",
+                "Image": ""
+            },
+            "Happy": {
+                "Rate": "+12%",
+                "Pitch": "+2Hz",
+                "Volume": "+0%",
+                "Style": "cheerful",
+                "Image": ""
+            },
+            "Inside Voice": {
+                "Rate": "-3%",
+                "Pitch": "-8Hz",
+                "Volume": "-20%",
+                "Style": "general",
+                "Image": ""
+            },
+            "Desperate": {
+                "Rate": "+22%",
+                "Pitch": "+12Hz",
+                "Volume": "+10%",
+                "Style": "terrified",
+                "Image": ""
+            }
+        }
+    },
+    {
+        "ReferenceID": 5,
+        "Alias": "Ted",
+        "Engine": "edge-tts",
+        "VoiceID": 98,
+        "ShortName": "en-US-AndrewNeural",
+        "Gender": "Male",
+        "Locale": "en-US",
+        "Description": "A middle-aged American man who is kind of salty",
+        "SampleText": "Why don't you go play in traffic?",
+        "Baseline": {
+            "Rate": "+0%",
+            "Pitch": "-5Hz",
+            "Volume": "+0%"
+        },
+        "Variations": {
+            "Calm": {
+                "Rate": "+0%",
+                "Pitch": "-5Hz",
+                "Volume": "+0%",
+                "Style": "general",
+                "Image": ""
+            },
+            "Excited": {
+                "Rate": "+10%",
+                "Pitch": "-3Hz",
+                "Volume": "+5%",
+                "Style": "cheerful",
+                "Image": ""
+            },
+            "Stressed": {
+                "Rate": "+10%",
+                "Pitch": "+0Hz",
+                "Volume": "+10%",
+                "Style": "unfriendly",
+                "Image": ""
+            },
+            "Whisper": {
+                "Rate": "-10%",
+                "Pitch": "-5Hz",
+                "Volume": "-20%",
+                "Style": "whispering",
+                "Image": ""
+            },
+            "Angry": {
+                "Rate": "+15%",
+                "Pitch": "-5Hz",
+                "Volume": "+20%",
+                "Style": "angry",
+                "Image": ""
+            },
+            "Loud": {
+                "Rate": "+0%",
+                "Pitch": "-5Hz",
+                "Volume": "+30%",
+                "Style": "shouting",
+                "Image": ""
+            },
+            "Depressed": {
+                "Rate": "-15%",
+                "Pitch": "-10Hz",
+                "Volume": "-10%",
+                "Style": "sad",
+                "Image": ""
+            },
+            "Frustrated": {
+                "Rate": "+5%",
+                "Pitch": "+0Hz",
+                "Volume": "+10%",
+                "Style": "unfriendly",
+                "Image": ""
+            },
+            "Happy": {
+                "Rate": "+10%",
+                "Pitch": "+0Hz",
+                "Volume": "+5%",
+                "Style": "cheerful",
+                "Image": ""
+            },
+            "Inside Voice": {
+                "Rate": "-5%",
+                "Pitch": "-10Hz",
+                "Volume": "-15%",
+                "Style": "general",
+                "Image": ""
+            },
+            "Desperate": {
+                "Rate": "+20%",
+                "Pitch": "+10Hz",
+                "Volume": "+15%",
+                "Style": "terrified",
+                "Image": ""
+            }
+        }
+    },
+    {
+        "ReferenceID": 6,
+        "Alias": "James",
+        "Engine": "edge-tts",
+        "VoiceID": 95,
+        "ShortName": "en-PH-JamesNeural",
+        "Gender": "Male",
+        "Locale": "en-PH",
+        "Description": "An average Philippino American",
+        "SampleText": "Why don't you go play in traffic?",
+        "Baseline": {
+            "Rate": "-5%",
+            "Pitch": "-8Hz",
+            "Volume": "+0%"
+        },
+        "Variations": {
+            "Calm": {
+                "Rate": "-5%",
+                "Pitch": "-8Hz",
+                "Volume": "+0%",
+                "Style": "general",
+                "Image": ""
+            },
+            "Excited": {
+                "Rate": "+5%",
+                "Pitch": "-6Hz",
+                "Volume": "+5%",
+                "Style": "cheerful",
+                "Image": ""
+            },
+            "Stressed": {
+                "Rate": "+5%",
+                "Pitch": "-3Hz",
+                "Volume": "+10%",
+                "Style": "unfriendly",
+                "Image": ""
+            },
+            "Whisper": {
+                "Rate": "-15%",
+                "Pitch": "-8Hz",
+                "Volume": "-20%",
+                "Style": "whispering",
+                "Image": ""
+            },
+            "Angry": {
+                "Rate": "+10%",
+                "Pitch": "-8Hz",
+                "Volume": "+20%",
+                "Style": "angry",
+                "Image": ""
+            },
+            "Loud": {
+                "Rate": "-5%",
+                "Pitch": "-8Hz",
+                "Volume": "+30%",
+                "Style": "shouting",
+                "Image": ""
+            },
+            "Depressed": {
+                "Rate": "-20%",
+                "Pitch": "-13Hz",
+                "Volume": "-10%",
+                "Style": "sad",
+                "Image": ""
+            },
+            "Frustrated": {
+                "Rate": "+0%",
+                "Pitch": "-3Hz",
+                "Volume": "+10%",
+                "Style": "unfriendly",
+                "Image": ""
+            },
+            "Happy": {
+                "Rate": "+5%",
+                "Pitch": "-3Hz",
+                "Volume": "+5%",
+                "Style": "cheerful",
+                "Image": ""
+            },
+            "Inside Voice": {
+                "Rate": "-10%",
+                "Pitch": "-13Hz",
+                "Volume": "-15%",
+                "Style": "general",
+                "Image": ""
+            },
+            "Desperate": {
+                "Rate": "+15%",
+                "Pitch": "+7Hz",
+                "Volume": "+15%",
+                "Style": "terrified",
+                "Image": ""
+            }
+        }
+    },
+    {
+        "ReferenceID": 7,
+        "Alias": "Boris",
+        "Engine": "edge-tts",
+        "VoiceID": 47,
+        "ShortName": "bg-BG-BorislavNeural",
+        "Gender": "Male",
+        "Locale": "bg-BG",
+        "Description": "A Bulgarian man",
+        "SampleText": "this is the best advice I have ever given",
+        "Baseline": {
+            "Rate": "-5%",
+            "Pitch": "-3Hz",
+            "Volume": "+0%"
+        },
+        "Variations": {
+            "Calm": {
+                "Rate": "-5%",
+                "Pitch": "-3Hz",
+                "Volume": "+0%",
+                "Style": "general",
+                "Image": ""
+            },
+            "Excited": {
+                "Rate": "+5%",
+                "Pitch": "-1Hz",
+                "Volume": "+5%",
+                "Style": "cheerful",
+                "Image": ""
+            },
+            "Stressed": {
+                "Rate": "+5%",
+                "Pitch": "+2Hz",
+                "Volume": "+10%",
+                "Style": "unfriendly",
+                "Image": ""
+            },
+            "Whisper": {
+                "Rate": "-15%",
+                "Pitch": "-3Hz",
+                "Volume": "-20%",
+                "Style": "whispering",
+                "Image": ""
+            },
+            "Angry": {
+                "Rate": "+10%",
+                "Pitch": "-3Hz",
+                "Volume": "+20%",
+                "Style": "angry",
+                "Image": ""
+            },
+            "Loud": {
+                "Rate": "-5%",
+                "Pitch": "-3Hz",
+                "Volume": "+30%",
+                "Style": "shouting",
+                "Image": ""
+            },
+            "Depressed": {
+                "Rate": "-20%",
+                "Pitch": "-8Hz",
+                "Volume": "-10%",
+                "Style": "sad",
+                "Image": ""
+            },
+            "Frustrated": {
+                "Rate": "+0%",
+                "Pitch": "+2Hz",
+                "Volume": "+10%",
+                "Style": "unfriendly",
+                "Image": ""
+            },
+            "Happy": {
+                "Rate": "+5%",
+                "Pitch": "+2Hz",
+                "Volume": "+5%",
+                "Style": "cheerful",
+                "Image": ""
+            },
+            "Inside Voice": {
+                "Rate": "-10%",
+                "Pitch": "-8Hz",
+                "Volume": "-15%",
+                "Style": "general",
+                "Image": ""
+            },
+            "Desperate": {
+                "Rate": "+15%",
+                "Pitch": "+12Hz",
+                "Volume": "+15%",
+                "Style": "terrified",
+                "Image": ""
+            }
+        }
+    },
+    {
+        "ReferenceID": 8,
+        "Alias": "Linus Torvalds",
+        "Engine": "edge-tts",
+        "VoiceID": 129,
+        "ShortName": "fi-FI-HarriNeural",
+        "Gender": "Male",
+        "Locale": "fi-FI",
+        "Description": "A Finnish dude who just knows things",
+        "SampleText": "Linux for everyone!",
+        "Baseline": {
+            "Rate": "+5%",
+            "Pitch": "+7Hz",
+            "Volume": "+0%"
+        },
+        "Variations": {
+            "Calm": {
+                "Rate": "+5%",
+                "Pitch": "+7Hz",
+                "Volume": "+0%",
+                "Style": "general",
+                "Image": ""
+            },
+            "Excited": {
+                "Rate": "+15%",
+                "Pitch": "+9Hz",
+                "Volume": "+5%",
+                "Style": "cheerful",
+                "Image": ""
+            },
+            "Stressed": {
+                "Rate": "+15%",
+                "Pitch": "+12Hz",
+                "Volume": "+10%",
+                "Style": "unfriendly",
+                "Image": ""
+            },
+            "Whisper": {
+                "Rate": "-5%",
+                "Pitch": "+7Hz",
+                "Volume": "-20%",
+                "Style": "whispering",
+                "Image": ""
+            },
+            "Angry": {
+                "Rate": "+20%",
+                "Pitch": "+7Hz",
+                "Volume": "+20%",
+                "Style": "angry",
+                "Image": ""
+            },
+            "Loud": {
+                "Rate": "+5%",
+                "Pitch": "+7Hz",
+                "Volume": "+30%",
+                "Style": "shouting",
+                "Image": ""
+            },
+            "Depressed": {
+                "Rate": "-10%",
+                "Pitch": "+2Hz",
+                "Volume": "-10%",
+                "Style": "sad",
+                "Image": ""
+            },
+            "Frustrated": {
+                "Rate": "+10%",
+                "Pitch": "+12Hz",
+                "Volume": "+10%",
+                "Style": "unfriendly",
+                "Image": ""
+            },
+            "Happy": {
+                "Rate": "+15%",
+                "Pitch": "+12Hz",
+                "Volume": "+5%",
+                "Style": "cheerful",
+                "Image": ""
+            },
+            "Inside Voice": {
+                "Rate": "+0%",
+                "Pitch": "+2Hz",
+                "Volume": "-15%",
+                "Style": "general",
+                "Image": ""
+            },
+            "Desperate": {
+                "Rate": "+25%",
+                "Pitch": "+22Hz",
+                "Volume": "+15%",
+                "Style": "terrified",
+                "Image": ""
+            }
+        }
+    },
+    {
+        "ReferenceID": 9,
+        "Alias": "Michelle",
+        "Engine": "edge-tts",
+        "VoiceID": 122,
+        "ShortName": "en-US-MichelleNeural",
+        "Gender": "Female",
+        "Locale": "en-US",
+        "Description": "A hot blond American Woman",
+        "SampleText": "Love me baby!\nYou're such a great lover!",
+        "Baseline": {
+            "Rate": "+30%",
+            "Pitch": "+3Hz",
+            "Volume": "+0%"
+        },
+        "Variations": {
+            "Calm": {
+                "Rate": "+30%",
+                "Pitch": "+3Hz",
+                "Volume": "+0%",
+                "Style": "general",
+                "Image": ""
+            },
+            "Excited": {
+                "Rate": "+40%",
+                "Pitch": "+5Hz",
+                "Volume": "+5%",
+                "Style": "cheerful",
+                "Image": ""
+            },
+            "Stressed": {
+                "Rate": "+40%",
+                "Pitch": "+8Hz",
+                "Volume": "+10%",
+                "Style": "unfriendly",
+                "Image": ""
+            },
+            "Whisper": {
+                "Rate": "+20%",
+                "Pitch": "+3Hz",
+                "Volume": "-20%",
+                "Style": "whispering",
+                "Image": ""
+            },
+            "Angry": {
+                "Rate": "+45%",
+                "Pitch": "+3Hz",
+                "Volume": "+20%",
+                "Style": "angry",
+                "Image": ""
+            },
+            "Loud": {
+                "Rate": "+30%",
+                "Pitch": "+3Hz",
+                "Volume": "+30%",
+                "Style": "shouting",
+                "Image": ""
+            },
+            "Depressed": {
+                "Rate": "+15%",
+                "Pitch": "-2Hz",
+                "Volume": "-10%",
+                "Style": "sad",
+                "Image": ""
+            },
+            "Frustrated": {
+                "Rate": "+35%",
+                "Pitch": "+8Hz",
+                "Volume": "+10%",
+                "Style": "unfriendly",
+                "Image": ""
+            },
+            "Happy": {
+                "Rate": "+40%",
+                "Pitch": "+8Hz",
+                "Volume": "+5%",
+                "Style": "cheerful",
+                "Image": ""
+            },
+            "Inside Voice": {
+                "Rate": "+25%",
+                "Pitch": "-2Hz",
+                "Volume": "-15%",
+                "Style": "general",
+                "Image": ""
+            },
+            "Desperate": {
+                "Rate": "+50%",
+                "Pitch": "+18Hz",
+                "Volume": "+15%",
+                "Style": "terrified",
+                "Image": ""
+            }
+        }
+    },
+    {
+        "ReferenceID": 10,
+        "Alias": "Professor Capurnicous",
+        "Engine": "edge-tts",
+        "VoiceID": 221,
+        "ShortName": "pl-PL-MarekNeural",
+        "Gender": "Male",
+        "Locale": "pl-PL",
+        "Description": "A smart Polish scientist",
+        "SampleText": "For the love of God!\nLet the boy, sleep in your bed!",
+        "Baseline": {
+            "Rate": "+5%",
+            "Pitch": "-13Hz",
+            "Volume": "+0%"
+        },
+        "Variations": {
+            "Calm": {
+                "Rate": "-10%",
+                "Pitch": "-13Hz",
+                "Volume": "+0%",
+                "Style": "general",
+                "Image": ""
+            },
+            "Excited": {
+                "Rate": "+15%",
+                "Pitch": "-11Hz",
+                "Volume": "+5%",
+                "Style": "cheerful",
+                "Image": ""
+            },
+            "Stressed": {
+                "Rate": "+15%",
+                "Pitch": "-8Hz",
+                "Volume": "+10%",
+                "Style": "unfriendly",
+                "Image": ""
+            },
+            "Whisper": {
+                "Rate": "-5%",
+                "Pitch": "-13Hz",
+                "Volume": "-20%",
+                "Style": "whispering",
+                "Image": ""
+            },
+            "Angry": {
+                "Rate": "+20%",
+                "Pitch": "-13Hz",
+                "Volume": "+20%",
+                "Style": "angry",
+                "Image": ""
+            },
+            "Loud": {
+                "Rate": "+5%",
+                "Pitch": "-13Hz",
+                "Volume": "+30%",
+                "Style": "shouting",
+                "Image": ""
+            },
+            "Depressed": {
+                "Rate": "-10%",
+                "Pitch": "-18Hz",
+                "Volume": "-10%",
+                "Style": "sad",
+                "Image": ""
+            },
+            "Frustrated": {
+                "Rate": "+10%",
+                "Pitch": "-8Hz",
+                "Volume": "+10%",
+                "Style": "unfriendly",
+                "Image": ""
+            },
+            "Happy": {
+                "Rate": "+15%",
+                "Pitch": "-8Hz",
+                "Volume": "+5%",
+                "Style": "cheerful",
+                "Image": ""
+            },
+            "Inside Voice": {
+                "Rate": "+0%",
+                "Pitch": "-18Hz",
+                "Volume": "-15%",
+                "Style": "general",
+                "Image": ""
+            },
+            "Desperate": {
+                "Rate": "+25%",
+                "Pitch": "+2Hz",
+                "Volume": "+15%",
+                "Style": "terrified",
+                "Image": ""
+            }
+        }
+    },
+    {
+        "ReferenceID": 11,
+        "Alias": "Katarina ",
+        "Engine": "edge-tts",
+        "VoiceID": 222,
+        "ShortName": "pl-PL-ZofiaNeural",
+        "Gender": "Female",
+        "Locale": "pl-PL",
+        "Description": "Young Polish woman from teh welcoming committee.",
+        "SampleText": "Nostrovia ! Stolat Stolat Pani Ziejewska. Dzien Dobry Babka Bienewska! Milego dnia Stephen",
+        "Baseline": {
+            "Rate": "+5%",
+            "Pitch": "-13Hz",
+            "Volume": "+0%"
+        },
+        "Variations": {
+            "Calm": {
+                "Rate": "+5%",
+                "Pitch": "-13Hz",
+                "Volume": "+0%",
+                "Style": "general",
+                "Image": ""
+            },
+            "Excited": {
+                "Rate": "+15%",
+                "Pitch": "-11Hz",
+                "Volume": "+5%",
+                "Style": "cheerful",
+                "Image": ""
+            },
+            "Stressed": {
+                "Rate": "+15%",
+                "Pitch": "-8Hz",
+                "Volume": "+10%",
+                "Style": "unfriendly",
+                "Image": ""
+            },
+            "Whisper": {
+                "Rate": "-5%",
+                "Pitch": "-13Hz",
+                "Volume": "-20%",
+                "Style": "whispering",
+                "Image": ""
+            },
+            "Angry": {
+                "Rate": "+20%",
+                "Pitch": "-13Hz",
+                "Volume": "+20%",
+                "Style": "angry",
+                "Image": ""
+            },
+            "Loud": {
+                "Rate": "+5%",
+                "Pitch": "-13Hz",
+                "Volume": "+30%",
+                "Style": "shouting",
+                "Image": ""
+            },
+            "Depressed": {
+                "Rate": "-10%",
+                "Pitch": "-18Hz",
+                "Volume": "-10%",
+                "Style": "sad",
+                "Image": ""
+            },
+            "Frustrated": {
+                "Rate": "+10%",
+                "Pitch": "-8Hz",
+                "Volume": "+10%",
+                "Style": "unfriendly",
+                "Image": ""
+            },
+            "Happy": {
+                "Rate": "+15%",
+                "Pitch": "-8Hz",
+                "Volume": "+5%",
+                "Style": "cheerful",
+                "Image": ""
+            },
+            "Inside Voice": {
+                "Rate": "+0%",
+                "Pitch": "-18Hz",
+                "Volume": "-15%",
+                "Style": "general",
+                "Image": ""
+            },
+            "Desperate": {
+                "Rate": "+25%",
+                "Pitch": "+2Hz",
+                "Volume": "+15%",
+                "Style": "terrified",
+                "Image": ""
+            }
+        }
+    },
+    {
+        "ReferenceID": 12,
+        "Alias": "Adeola the Prince",
+        "Engine": "edge-tts",
+        "VoiceID": 93,
+        "ShortName": "en-NG-AbeoNeural",
+        "Gender": "Male",
+        "Locale": "en-NG",
+        "Description": "The Nigerian Price of your dreams",
+        "SampleText": "I am a Nigerian Prince\nIf you give me some money, I will give it back to you when I get to America\nI love you so much",
+        "Baseline": {
+            "Rate": "+0%",
+            "Pitch": "+0Hz",
+            "Volume": "+0%"
+        },
+        "Variations": {
+            "Calm": {
+                "Rate": "+0%",
+                "Pitch": "+0Hz",
+                "Volume": "+0%",
+                "Style": "general",
+                "Image": ""
+            },
+            "Excited": {
+                "Rate": "+10%",
+                "Pitch": "+2Hz",
+                "Volume": "+5%",
+                "Style": "cheerful",
+                "Image": ""
+            },
+            "Stressed": {
+                "Rate": "+10%",
+                "Pitch": "+5Hz",
+                "Volume": "+10%",
+                "Style": "unfriendly",
+                "Image": ""
+            },
+            "Whisper": {
+                "Rate": "-10%",
+                "Pitch": "+0Hz",
+                "Volume": "-20%",
+                "Style": "whispering",
+                "Image": ""
+            },
+            "Angry": {
+                "Rate": "+15%",
+                "Pitch": "+0Hz",
+                "Volume": "+20%",
+                "Style": "angry",
+                "Image": ""
+            },
+            "Loud": {
+                "Rate": "+0%",
+                "Pitch": "+0Hz",
+                "Volume": "+30%",
+                "Style": "shouting",
+                "Image": ""
+            },
+            "Depressed": {
+                "Rate": "-15%",
+                "Pitch": "-5Hz",
+                "Volume": "-10%",
+                "Style": "sad",
+                "Image": ""
+            },
+            "Frustrated": {
+                "Rate": "+5%",
+                "Pitch": "+5Hz",
+                "Volume": "+10%",
+                "Style": "unfriendly",
+                "Image": ""
+            },
+            "Happy": {
+                "Rate": "+10%",
+                "Pitch": "+5Hz",
+                "Volume": "+5%",
+                "Style": "cheerful",
+                "Image": ""
+            },
+            "Inside Voice": {
+                "Rate": "-5%",
+                "Pitch": "-5Hz",
+                "Volume": "-15%",
+                "Style": "general",
+                "Image": ""
+            },
+            "Desperate": {
+                "Rate": "+20%",
+                "Pitch": "+15Hz",
+                "Volume": "+15%",
+                "Style": "terrified",
+                "Image": ""
+            }
+        }
+    },
+    {
+        "ReferenceID": 13,
+        "Alias": "Terry the Fag",
+        "Engine": "edge-tts",
+        "VoiceID": 100,
+        "ShortName": "en-US-BrianNeural",
+        "Gender": "Male",
+        "Locale": "en-US",
+        "Description": "A snippity young American fag.",
+        "SampleText": "Did you see those lazy Mexicans over there?\nI hope ice gets them.",
+        "Baseline": {
+            "Rate": "+7%",
+            "Pitch": "+5Hz",
+            "Volume": "+0%"
+        },
+        "Variations": {
+            "Calm": {
+                "Rate": "+7%",
+                "Pitch": "+5Hz",
+                "Volume": "+0%",
+                "Style": "general",
+                "Image": ""
+            },
+            "Excited": {
+                "Rate": "+17%",
+                "Pitch": "+7Hz",
+                "Volume": "+5%",
+                "Style": "cheerful",
+                "Image": ""
+            },
+            "Stressed": {
+                "Rate": "+17%",
+                "Pitch": "+10Hz",
+                "Volume": "+10%",
+                "Style": "unfriendly",
+                "Image": ""
+            },
+            "Whisper": {
+                "Rate": "-3%",
+                "Pitch": "+5Hz",
+                "Volume": "-20%",
+                "Style": "whispering",
+                "Image": ""
+            },
+            "Angry": {
+                "Rate": "+22%",
+                "Pitch": "+5Hz",
+                "Volume": "+20%",
+                "Style": "angry",
+                "Image": ""
+            },
+            "Loud": {
+                "Rate": "+7%",
+                "Pitch": "+5Hz",
+                "Volume": "+30%",
+                "Style": "shouting",
+                "Image": ""
+            },
+            "Depressed": {
+                "Rate": "-8%",
+                "Pitch": "+0Hz",
+                "Volume": "-10%",
+                "Style": "sad",
+                "Image": ""
+            },
+            "Frustrated": {
+                "Rate": "+12%",
+                "Pitch": "+10Hz",
+                "Volume": "+10%",
+                "Style": "unfriendly",
+                "Image": ""
+            },
+            "Happy": {
+                "Rate": "+17%",
+                "Pitch": "+10Hz",
+                "Volume": "+5%",
+                "Style": "cheerful",
+                "Image": ""
+            },
+            "Inside Voice": {
+                "Rate": "+2%",
+                "Pitch": "+0Hz",
+                "Volume": "-15%",
+                "Style": "general",
+                "Image": ""
+            },
+            "Desperate": {
+                "Rate": "+27%",
+                "Pitch": "+20Hz",
+                "Volume": "+15%",
+                "Style": "terrified",
+                "Image": ""
+            }
+        }
+    },
+    {
+        "ReferenceID": 14,
+        "Alias": "Guido the Whop",
+        "Engine": "edge-tts",
+        "VoiceID": 179,
+        "ShortName": "it-IT-DiegoNeural",
+        "Gender": "Male",
+        "Locale": "it-IT",
+        "Description": "A super sterotypical Italian man who likes a speghetti.",
+        "SampleText": "Ahhh, do you\nlike a\nmy spaghetti?",
+        "Baseline": {
+            "Rate": "+0%",
+            "Pitch": "+0Hz",
+            "Volume": "+0%"
+        },
+        "Variations": {
+            "Calm": {
+                "Rate": "+0%",
+                "Pitch": "+0Hz",
+                "Volume": "+0%",
+                "Style": "general",
+                "Image": ""
+            },
+            "Excited": {
+                "Rate": "+10%",
+                "Pitch": "+2Hz",
+                "Volume": "+5%",
+                "Style": "cheerful",
+                "Image": ""
+            },
+            "Stressed": {
+                "Rate": "+10%",
+                "Pitch": "+5Hz",
+                "Volume": "+10%",
+                "Style": "unfriendly",
+                "Image": ""
+            },
+            "Whisper": {
+                "Rate": "-10%",
+                "Pitch": "+0Hz",
+                "Volume": "-95%",
+                "Style": "whispering",
+                "Image": ""
+            },
+            "Angry": {
+                "Rate": "+15%",
+                "Pitch": "+0Hz",
+                "Volume": "+20%",
+                "Style": "angry",
+                "Image": ""
+            },
+            "Loud": {
+                "Rate": "+0%",
+                "Pitch": "+0Hz",
+                "Volume": "+30%",
+                "Style": "shouting",
+                "Image": ""
+            },
+            "Depressed": {
+                "Rate": "-15%",
+                "Pitch": "-5Hz",
+                "Volume": "-10%",
+                "Style": "sad",
+                "Image": ""
+            },
+            "Frustrated": {
+                "Rate": "+5%",
+                "Pitch": "+5Hz",
+                "Volume": "+10%",
+                "Style": "unfriendly",
+                "Image": ""
+            },
+            "Happy": {
+                "Rate": "+10%",
+                "Pitch": "+5Hz",
+                "Volume": "+5%",
+                "Style": "cheerful",
+                "Image": ""
+            },
+            "Inside Voice": {
+                "Rate": "-5%",
+                "Pitch": "-5Hz",
+                "Volume": "-15%",
+                "Style": "general",
+                "Image": ""
+            },
+            "Desperate": {
+                "Rate": "+20%",
+                "Pitch": "+15Hz",
+                "Volume": "+15%",
+                "Style": "terrified",
+                "Image": ""
+            }
+        }
+    },
+    {
+        "ReferenceID": 15,
+        "Alias": "The Sweedish Chef",
+        "Engine": "edge-tts",
+        "VoiceID": 129,
+        "ShortName": "fi-FI-HarriNeural",
+        "Gender": "Male",
+        "Locale": "fi-FI",
+        "Description": "The Sweedish Chef from the Muppets, sort of...",
+        "SampleText": "merni merni\nyou puts the chicky in the pottsy\nfjord bjorn\nborja borga borga smorgasbord",
+        "Baseline": {
+            "Rate": "+5%",
+            "Pitch": "-10Hz",
+            "Volume": "+0%"
+        },
+        "Variations": {
+            "Calm": {
+                "Rate": "+5%",
+                "Pitch": "-10Hz",
+                "Volume": "+0%",
+                "Style": "general",
+                "Image": ""
+            },
+            "Excited": {
+                "Rate": "+15%",
+                "Pitch": "-8Hz",
+                "Volume": "+5%",
+                "Style": "cheerful",
+                "Image": ""
+            },
+            "Stressed": {
+                "Rate": "+15%",
+                "Pitch": "-5Hz",
+                "Volume": "+10%",
+                "Style": "unfriendly",
+                "Image": ""
+            },
+            "Whisper": {
+                "Rate": "-5%",
+                "Pitch": "-10Hz",
+                "Volume": "-20%",
+                "Style": "whispering",
+                "Image": ""
+            },
+            "Angry": {
+                "Rate": "+20%",
+                "Pitch": "-10Hz",
+                "Volume": "+20%",
+                "Style": "angry",
+                "Image": ""
+            },
+            "Loud": {
+                "Rate": "+5%",
+                "Pitch": "-10Hz",
+                "Volume": "+30%",
+                "Style": "shouting",
+                "Image": ""
+            },
+            "Depressed": {
+                "Rate": "-10%",
+                "Pitch": "-15Hz",
+                "Volume": "-10%",
+                "Style": "sad",
+                "Image": ""
+            },
+            "Frustrated": {
+                "Rate": "+10%",
+                "Pitch": "-5Hz",
+                "Volume": "+10%",
+                "Style": "unfriendly",
+                "Image": ""
+            },
+            "Happy": {
+                "Rate": "+15%",
+                "Pitch": "-5Hz",
+                "Volume": "+5%",
+                "Style": "cheerful",
+                "Image": ""
+            },
+            "Inside Voice": {
+                "Rate": "+0%",
+                "Pitch": "-15Hz",
+                "Volume": "-15%",
+                "Style": "general",
+                "Image": ""
+            },
+            "Desperate": {
+                "Rate": "+25%",
                 "Pitch": "+5Hz",
                 "Volume": "+15%",
                 "Style": "terrified",

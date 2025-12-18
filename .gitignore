@@ -123,4 +123,6 @@ Thumbs.db
 # voice-library/*/saved/*.wav  # Example: ignore saved audio in subfolders
 
 # don't need this thrown arond
-.garbage-can
+.garbage-can/
+audio-clips/
+

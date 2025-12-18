@@ -13,12 +13,12 @@ echo "--- Building with PyInstaller ---"
 # --windowed: Do not show a console window when running
 # --add-data: Bundle the assets folder (format is source:dest)
 pyinstaller --noconfirm --onefile --windowed \
-    --name "image_inpainter" \
+    --name "text-to-speech" \
     --icon "assets/icons/icon.png" \
     --add-data "assets:assets" \
-    image_inpainter.py
+    src/text_to_speech.py
 
-echo "--- Success! Binary created: dist/image_inpainter ---"
+echo "--- Success! Binary created: dist/text-to-speech ---"
 
 # Play a notification sound (System Bell) to alert the user
 echo -e "\a"
