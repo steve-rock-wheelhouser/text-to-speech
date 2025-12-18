@@ -120,8 +120,8 @@
                 "Image": ""
             },
             "Angry": {
-                "Rate": "+15%",
-                "Pitch": "+0Hz",
+                "Rate": "+25%",
+                "Pitch": "-10Hz",
                 "Volume": "+20%",
                 "Style": "angry",
                 "Image": ""
@@ -148,7 +148,7 @@
                 "Image": ""
             },
             "Cheerful": {
-                "Rate": "-10%",
+                "Rate": "+15%",
                 "Pitch": "-5Hz",
                 "Volume": "+5%",
                 "Style": "cheerful",
