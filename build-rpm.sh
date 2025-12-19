@@ -19,12 +19,38 @@ SUCCESS=0
 trap 'if [ $SUCCESS -eq 0 ]; then play_fail_sound; fi' EXIT
 
 set -euo pipefail # Exit on error, unset var, or pipe failure
+ 
+# --- Dependency Checking ---
+check_and_install_deps() {
+    echo "--- Checking for build dependencies ---"
+    # Map commands to their package names
+    declare -A deps
+    deps["rpmbuild"]="rpm-build"
+    deps["rpmdev-setuptree"]="rpmdevtools"
+    deps["desktop-file-validate"]="desktop-file-utils"
+    deps["appstreamcli"]="appstream"
+    deps["rpmsign"]="rpm-sign"
+    # Add SVG converters; check for at least one
+    if ! command -v rsvg-convert &> /dev/null && ! command -v inkscape &> /dev/null && ! command -v convert &> /dev/null; then
+        deps["rsvg-convert"]="librsvg2-tools" # Preferred for SVG, suggest this one
+    fi
 
-# Check for rpmbuild dependency
-if ! command -v rpmbuild &> /dev/null; then
-    echo "Error: 'rpmbuild' is not installed. Please install the 'rpm-build' package."
-    exit 1
-fi
+    local to_install=()
+    for cmd in "${!deps[@]}"; do
+        if ! command -v "$cmd" &> /dev/null; then
+            echo "Missing dependency: '${deps[$cmd]}' (provides '$cmd')"
+            to_install+=("${deps[$cmd]}")
+        fi
+    done
+
+    if [ ${#to_install[@]} -gt 0 ]; then
+        echo "The following packages are required: ${to_install[*]}"
+        if command -v dnf &> /dev/null && command -v sudo &> /dev/null; then
+            sudo dnf install -y "${to_install[@]}"
+        fi
+    fi
+}
+check_and_install_deps
 
 APP_NAME="text-to-speech"
 VERSION="0.1.0"
@@ -104,9 +130,16 @@ fi
 if [ -f "${PWD}/dist/${BINARY_NAME}" ]; then
     cp -f "${PWD}/dist/${BINARY_NAME}" "build/${SOURCE_DIR}/text-to-speech.bin"
 fi
-
-# Copy the ENTIRE assets folder (Icons, Models, Everything)
-cp -r "${PWD}/assets" "build/${SOURCE_DIR}/"
+ 
+# --- Prepare Icons for RPM ---
+echo "--- Preparing and renaming icons for RPM spec file ---"
+SVG_ICON_SRC="assets/icons/icon.svg"
+PNG_ICON_SRC="assets/icons/icon.png"
+ICON_DEST_DIR="build/${SOURCE_DIR}/assets/icons"
+APP_ICON_NAME="com.wheelhouser.text_to_speech"
+mkdir -p "$ICON_DEST_DIR"
+cp "$SVG_ICON_SRC" "$ICON_DEST_DIR/${APP_ICON_NAME}.svg"
+cp "$PNG_ICON_SRC" "$ICON_DEST_DIR/${APP_ICON_NAME}.png"
 
 # Create Tarball
 echo "--- Creating Source Tarball ---"
@@ -141,8 +174,9 @@ fi
 
 # --- Prepare Spec File ---
 # Use the existing text-to-speech.spec file and modify it
+SPEC_FILE_SRC="${APP_NAME}.spec"
 SPEC_FILE_FINAL="${RPMBUILD_DIR}/SPECS/${APP_NAME}.spec"
-cp "text-to-speech.spec" "$SPEC_FILE_FINAL"
+cp "$SPEC_FILE_SRC" "$SPEC_FILE_FINAL"
 
 # Ensure changelog exists to avoid warnings
 if ! grep -q "%changelog" "$SPEC_FILE_FINAL"; then
@@ -162,6 +196,7 @@ echo "--- Building RPM using rpmbuild ---"
 rpmbuild -ba \
     --define "_topdir ${RPMBUILD_DIR}" \
     --define "__os_install_post %{nil}" \
+    --define "debug_package %{nil}" \
     "$SPEC_FILE_FINAL"
 
 echo "--- Done! RPMs located at: ---"
@@ -189,7 +224,7 @@ else
 fi
 
 echo "=== STEP 5: VERIFY RPM CONTENT ==="
-RPM_FILE=$(find rpmbuild/RPMS -name "*.rpm" | head -n 1)
+RPM_FILE=$(find "${RPMBUILD_DIR}/RPMS" -name "*.rpm" | head -n 1)
 if [ -n "$RPM_FILE" ]; then
     echo "Checking contents of $RPM_FILE..."
     echo "--- Icons ---"

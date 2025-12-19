@@ -12,6 +12,7 @@ echo "--- Building with PyInstaller ---"
 # --windowed: Do not show a console window when running
 # --add-data: Bundle the assets folder (format is source:dest)
 pyinstaller --noconfirm --onefile --windowed \
+    --specpath "build/pyinstaller_spec" \
     --name "text-to-speech" \
     --icon "assets/icons/icon.png" \
     --add-data "assets:assets" \
