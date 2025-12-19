@@ -104,7 +104,7 @@
         },
         "Variations": {
             "Calm": {
-                "Rate": "+45%",
+                "Rate": "+25%",
                 "Pitch": "-10Hz",
                 "Volume": "+0%",
                 "Style": "general",
@@ -1144,7 +1144,7 @@
             "Excited": {
                 "Rate": "+17%",
                 "Pitch": "+7Hz",
-                "Volume": "+5%",
+                "Volume": "+25%",
                 "Style": "cheerful",
                 "Image": ""
             },
@@ -1231,7 +1231,7 @@
         "Variations": {
             "Calm": {
                 "Rate": "+0%",
-                "Pitch": "+0Hz",
+                "Pitch": "-10Hz",
                 "Volume": "+0%",
                 "Style": "general",
                 "Image": ""

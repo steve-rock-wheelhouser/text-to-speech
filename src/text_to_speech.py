@@ -36,14 +36,22 @@ import sys
 import os
 import json
 import re
+import time
 import subprocess
+import shutil
+import warnings
 from PySide6.QtWidgets import (QApplication, QMainWindow, QWidget, QVBoxLayout, 
                                QHBoxLayout, QPushButton, QLabel, QFileDialog, QComboBox, QTextEdit,
                                QSpinBox, QMessageBox, QGridLayout, QGroupBox, QTabWidget, QInputDialog,
                                QScrollArea, QRadioButton, QButtonGroup, QListWidget, QAbstractItemView, QListView, QLineEdit,
                                QSizePolicy)
 from PySide6.QtGui import QPixmap, QIcon, QPalette, QColor
-from PySide6.QtCore import Qt, QThread, Signal, QSettings, QPoint, QTimer
+from PySide6.QtCore import Qt, QThread, Signal, QSettings, QPoint, QTimer, QStandardPaths
+import asyncio
+import edge_tts
+
+# Suppress the specific UserWarning from pygame about pkg_resources
+warnings.filterwarnings("ignore", category=UserWarning, message=".*pkg_resources is deprecated.*")
 
 def resource_path(relative_path):
     """ Get absolute path to resource, works for dev and for PyInstaller. """
@@ -398,47 +406,42 @@ class LimitedComboBox(QComboBox):
 class GenerationWorker(QThread):
     finished = Signal(bool, str)
 
-    def __init__(self, cmd):
+    def __init__(self, text, outfile, voice, pitch, rate, volume):
         super().__init__()
-        self.cmd = cmd
-        self.process = None
+        self.text = text
+        self.outfile = outfile
+        self.voice = voice
+        self.pitch = pitch
+        self.rate = rate
+        self.volume = volume
         self._is_running = True
+
+    async def _do_generation(self):
+        """Asynchronously generates the audio file using edge_tts."""
+        communicate = edge_tts.Communicate(
+            self.text, self.voice, pitch=self.pitch, rate=self.rate, volume=self.volume
+        )
+        await communicate.save(self.outfile)
 
     def run(self):
         try:
-            # Use Popen to have control over the process
-            self.process = subprocess.Popen(
-                self.cmd, 
-                stdout=subprocess.PIPE, 
-                stderr=subprocess.PIPE, 
-                text=True,
-                # Hide console window on Windows
-                creationflags=subprocess.CREATE_NO_WINDOW if sys.platform == 'win32' else 0
-            )
-            stdout, stderr = self.process.communicate()
-
-            # If stop() was called, _is_running will be False.
+            # Run the async generation function in a new event loop
+            asyncio.run(self._do_generation())
+            
             if not self._is_running:
                 self.finished.emit(True, "Operation cancelled by user.")
                 return
 
-            if self.process.returncode == 0:
-                self.finished.emit(True, "")
-            else:
-                self.finished.emit(False, stderr or stdout or f"Process failed with return code {self.process.returncode}")
-        
+            self.finished.emit(True, "")
         except Exception as e:
             if self._is_running:
                 self.finished.emit(False, str(e))
 
     def stop(self):
         self._is_running = False
-        if self.process and self.process.poll() is None:
-            self.process.terminate()
-            try:
-                self.process.wait(timeout=1)
-            except subprocess.TimeoutExpired:
-                self.process.kill()
+        # Note: This won't interrupt a running edge-tts network operation,
+        # but it will prevent subsequent steps if checked.
+
 #=====================================================================================================
 #--- Playback Worker Thread ---
 #=====================================================================================================
@@ -446,28 +449,111 @@ class PlaybackWorker(QThread):
     def __init__(self, files):
         super().__init__()
         self.files = files
-        self.current_process = None
+        self.playback_process = None
         self.is_running = True
 
     def run(self):
-        script_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "play_audio.py")
+        """
+        Plays a list of audio files. This logic is moved from play_audio.py to
+        avoid creating a subprocess that re-launches the app, and to allow for
+        immediate stopping of playback.
+        """
         for file_path in self.files:
             if not self.is_running:
                 break
+            
+            file_path = os.path.abspath(file_path)
+            if not os.path.exists(file_path):
+                print(f"Error: File not found: {file_path}")
+                continue
+
+            # 1. Try Pygame
             try:
-                self.current_process = subprocess.Popen(
-                    [sys.executable, script_path, file_path],
-                    stdout=subprocess.DEVNULL,
-                    stderr=subprocess.DEVNULL
-                )
-                self.current_process.wait()
-            except Exception:
+                os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
+                import pygame
+                pygame.mixer.init()
+                pygame.mixer.music.load(file_path)
+                pygame.mixer.music.play()
+                
+                while pygame.mixer.music.get_busy():
+                    if not self.is_running:
+                        pygame.mixer.music.stop()
+                        break
+                    time.sleep(0.1)
+                
+                if not self.is_running:
+                    break
+                continue
+            except ImportError:
                 pass
+            except Exception as e:
+                print(f"Pygame playback failed: {e}")
+
+            # 2. Try System Players
+            players = [
+                ("paplay", []), ("mpg123", []), ("afplay", []), ("aplay", []),
+                ("ffplay", ["-nodisp", "-autoexit", "-hide_banner"]),
+            ]
+
+            player_found = False
+            for player_cmd, args in players:
+                if shutil.which(player_cmd):
+                    try:
+                        self.playback_process = subprocess.Popen(
+                            [player_cmd] + args + [file_path],
+                            stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
+                        )
+                        
+                        while self.playback_process.poll() is None:
+                            if not self.is_running:
+                                self.playback_process.terminate()
+                                break
+                            time.sleep(0.1)
+
+                        if not self.is_running:
+                            break
+                        
+                        player_found = True
+                        break
+                    except (subprocess.CalledProcessError, FileNotFoundError):
+                        continue
+            
+            if not self.is_running:
+                break
+            if player_found:
+                continue
+
+            # 3. Flatpak Fallback
+            if shutil.which("flatpak-spawn"):
+                try:
+                    self.playback_process = subprocess.Popen(
+                        ["flatpak-spawn", "--host", "paplay", file_path],
+                        stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
+                    )
+                    
+                    while self.playback_process.poll() is None:
+                        if not self.is_running:
+                            self.playback_process.terminate()
+                            break
+                        time.sleep(0.1)
+
+                    if not self.is_running:
+                        break
+                    continue
+                except (subprocess.CalledProcessError, FileNotFoundError):
+                    print("Failed to play via flatpak-spawn.")
+
+            print("Error: Could not play audio. Please install 'pygame' or a CLI player.")
 
     def stop(self):
         self.is_running = False
-        if self.current_process and self.current_process.poll() is None:
-            self.current_process.terminate()
+        # For Pygame, the loop in run() will see the flag and stop.
+        # For subprocess, we terminate it directly.
+        if self.playback_process and self.playback_process.poll() is None:
+            try:
+                self.playback_process.terminate()
+            except Exception as e:
+                print(f"Error terminating playback process: {e}")
 
 #=====================================================================================================
 #--- Main Application Class ---
@@ -511,6 +597,8 @@ class TextToSpeechApp(QMainWindow):
         self.all_voices = []
         self.language_map = {}
 
+        # Initialize paths and load data
+        self._init_paths()
         # Load Data
         self.load_voices()
         self.load_characters()
@@ -531,6 +619,40 @@ class TextToSpeechApp(QMainWindow):
         self.variation_update_timer.setSingleShot(True)
         self.variation_update_timer.setInterval(750)  # 750ms delay after last change
         self.variation_update_timer.timeout.connect(self._perform_variation_update)
+
+    def _init_paths(self):
+        """Initializes paths for read-only data and read-write user library."""
+        # --- voices.json (read-only) ---
+        self.voices_path = None
+        voice_paths = [
+            resource_path("voices.json"),
+            os.path.join(os.path.dirname(os.path.abspath(__file__)), "voices.json"),
+            os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "voices.json")
+        ]
+        for p in voice_paths:
+            if os.path.exists(p):
+                self.voices_path = p
+                break
+
+        # --- characters.json (read-write) ---
+        # Use a standard, user-writable location for character data
+        app_data_path = QStandardPaths.writableLocation(QStandardPaths.AppDataLocation)
+        os.makedirs(app_data_path, exist_ok=True)
+        self.characters_lib_path = os.path.join(app_data_path, "characters.json")
+
+        # If user library doesn't exist, copy it from the bundle/source if available
+        if not os.path.exists(self.characters_lib_path):
+            template_path = None
+            template_paths = [
+                resource_path("voice-library/characters.json"),
+                os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "voice-library", "characters.json")
+            ]
+            for p in template_paths:
+                if os.path.exists(p):
+                    template_path = p
+                    break
+            if template_path:
+                shutil.copy2(template_path, self.characters_lib_path)
 
     def setup_general_tab(self):
         # Main layout for the tab
@@ -834,7 +956,13 @@ class TextToSpeechApp(QMainWindow):
             self.playback_worker.stop()
             self.playback_worker.wait()
             
-        full_paths = [os.path.join(self.current_playback_folder, f) for f in filenames]
+        full_paths = []
+        for f in filenames:
+            if os.path.isabs(f):
+                full_paths.append(f)
+            else:
+                full_paths.append(os.path.join(self.current_playback_folder, f))
+
         self.playback_worker = PlaybackWorker(full_paths)
         self.playback_worker.start()
 
@@ -878,24 +1006,16 @@ class TextToSpeechApp(QMainWindow):
 
     def load_voices(self):
         """Loads voices from voices.json."""
-        # Look in src/ or project root
-        paths = [
-            os.path.join(os.path.dirname(os.path.abspath(__file__)), "voices.json"),
-            os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "voices.json")
-        ]
-        
         voices = []
-        for p in paths:
-            if os.path.exists(p):
-                try:
-                    with open(p, 'r', encoding='utf-8') as f:
-                        voices = json.load(f)
-                    break
-                except Exception as e:
-                    print(f"Failed to load voices from {p}: {e}")
+        if self.voices_path and os.path.exists(self.voices_path):
+            try:
+                with open(self.voices_path, 'r', encoding='utf-8') as f:
+                    voices = json.load(f)
+            except Exception as e:
+                print(f"Failed to load voices from {self.voices_path}: {e}")
         
         if not voices:
-            self.voice_combo.addItem("Error: voices.json not found")
+            self.voice_combo.addItem("Error: voices.json not found or invalid")
             self.voice_combo.setEnabled(False)
             return
         
@@ -990,7 +1110,7 @@ class TextToSpeechApp(QMainWindow):
         
         details_str = " - ".join(details_parts)
 
-        return f"{voice_id} \t {person_name} \t ({details_str})"
+        return (f"{voice_id} \t {person_name} \t ({details_str})")
 
     def update_voice_list(self):
         """Filters and populates the voice combo box."""
@@ -1023,16 +1143,15 @@ class TextToSpeechApp(QMainWindow):
 
     def load_characters(self):
         """Loads characters from characters.json."""
-        # Path relative to src/ or project root
-        path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "voice-library", "characters.json")
-        
-        if not os.path.exists(path):
+        if not self.characters_lib_path or not os.path.exists(self.characters_lib_path):
+            # This can happen on first run if no template exists. The file will be created on save.
+            self.characters_data = []
             self.char_combo.addItem("Error: characters.json not found")
             self.char_combo.setEnabled(False)
             return
 
         try:
-            with open(path, 'r', encoding='utf-8') as f:
+            with open(self.characters_lib_path, 'r', encoding='utf-8') as f:
                 self.characters_data = json.load(f)
         except Exception as e:
             print(f"Failed to load characters: {e}")
@@ -1040,6 +1159,7 @@ class TextToSpeechApp(QMainWindow):
 
         # Sort characters by ReferenceID
         self.characters_data.sort(key=lambda x: x.get("ReferenceID", 0))
+        self.char_combo.setEnabled(True)
 
         self.char_combo.clear()
         for char in self.characters_data:
@@ -1097,32 +1217,24 @@ class TextToSpeechApp(QMainWindow):
         sample_text = self.text_input.toPlainText().strip() or "Hello, I am ready to speak."
 
         # 3. Find Full Voice Data (Need ID, Gender, Locale)
-        paths = [
-            os.path.join(os.path.dirname(os.path.abspath(__file__)), "voices.json"),
-            os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "voices.json")
-        ]
         voice_data = None
-        for p in paths:
-            if os.path.exists(p):
-                try:
-                    with open(p, 'r', encoding='utf-8') as f:
-                        voices = json.load(f)
-                        voice_data = next((v for v in voices if v.get("ShortName") == voice_shortname), None)
-                    if voice_data:
-                        break
-                except Exception:
-                    pass
+        if self.voices_path:
+            try:
+                with open(self.voices_path, 'r', encoding='utf-8') as f:
+                    voices = json.load(f)
+                    voice_data = next((v for v in voices if v.get("ShortName") == voice_shortname), None)
+            except Exception:
+                pass
         
         if not voice_data:
             QMessageBox.critical(self, "Error", "Could not find voice details in voices.json.")
             return
 
         # 4. Load Library to determine ID
-        lib_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "voice-library", "characters.json")
         library = []
-        if os.path.exists(lib_path):
+        if os.path.exists(self.characters_lib_path):
             try:
-                with open(lib_path, 'r', encoding='utf-8') as f:
+                with open(self.characters_lib_path, 'r', encoding='utf-8') as f:
                     library = json.load(f)
             except Exception: 
                 pass
@@ -1169,7 +1281,7 @@ class TextToSpeechApp(QMainWindow):
         else:
             library.append(new_character)
 
-        with open(lib_path, 'w', encoding='utf-8') as f:
+        with open(self.characters_lib_path, 'w', encoding='utf-8') as f:
             json.dump(library, f, indent=4)
 
         self.load_characters() # Refresh UI
@@ -1194,9 +1306,8 @@ class TextToSpeechApp(QMainWindow):
             self.characters_data.pop(current_index)
 
             # Save the updated library back to the file
-            lib_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "voice-library", "characters.json")
             try:
-                with open(lib_path, 'w', encoding='utf-8') as f:
+                with open(self.characters_lib_path, 'w', encoding='utf-8') as f:
                     json.dump(self.characters_data, f, indent=4)
                 self.load_characters() # Refresh UI
                 QMessageBox.information(self, "Success", f"Character '{alias}' has been deleted.")
@@ -1296,91 +1407,61 @@ class TextToSpeechApp(QMainWindow):
             return
 
         # Save the entire library back to the file
-        lib_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "voice-library", "characters.json")
         try:
-            with open(lib_path, 'w', encoding='utf-8') as f:
+            with open(self.characters_lib_path, 'w', encoding='utf-8') as f:
                 json.dump(self.characters_data, f, indent=4)
             # Also update the data stored in the combobox item to keep it in sync
             self.char_combo.setItemData(self.char_combo.currentIndex(), char_to_update)
         except Exception as e:
             QMessageBox.critical(self, "Save Error", f"Failed to save characters.json.\n\n{e}")
 
-    def get_generation_args(self, output_file, mode="general"):
-        """Helper to construct arguments for generate_speech_edge.py"""
-        
+    def preview_audio(self, mode="general"):
+        """Generates audio to a temp file and plays it."""
         if mode == "general":
             text = self.text_input.toPlainText().strip()
-            voice_id = self.voice_combo.currentData()
-            pitch_str = f"{self.pitch_spin.value():+d}Hz"
-            rate_str = f"{self.rate_spin.value():+d}%"
-            vol_str = f"{self.vol_spin.value():+d}%"
-        
-        elif mode == "character":
+            voice = self.voice_combo.currentData()
+            pitch = f"{self.pitch_spin.value():+d}Hz"
+            rate = f"{self.rate_spin.value():+d}%"
+            volume = f"{self.vol_spin.value():+d}%"
+        else: # character mode
             text = self.char_text_input.toPlainText().strip()
             char = self.char_combo.currentData()
             var_name = self.var_combo.currentText()
-            
             if not char or not var_name:
                 QMessageBox.warning(self, "Selection Error", "Please select a character and variation.")
-                return None
-            
-            voice_id = char.get("ShortName")
-            
-            # Get settings from variation (assuming absolute values as per your JSON structure)
-            variations = char.get("Variations", {})
-            settings = variations.get(var_name, {})
-            
-            pitch_str = settings.get("Pitch", "+0Hz")
-            rate_str = settings.get("Rate", "+0%")
-            vol_str = settings.get("Volume", "+0%")
+                return
+            voice = char.get("ShortName")
+            settings = char.get("Variations", {}).get(var_name, {})
+            pitch = settings.get("Pitch", "+0Hz")
+            rate = settings.get("Rate", "+0%")
+            volume = settings.get("Volume", "+0%")
 
-        if not text:
-            QMessageBox.warning(self, "Input Error", "Please enter some text.")
-            return None
-
-        if not voice_id:
-            QMessageBox.warning(self, "Voice Error", "Please select a valid voice.")
-            return None
-
-        # Path to the generation script
-        script_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "generate_speech_edge.py")
-
-        return [
-            sys.executable, script_path,
-            text, output_file,
-            "--voice", voice_id,
-            f"--pitch={pitch_str}",
-            f"--rate={rate_str}",
-            f"--volume={vol_str}"
-        ]
-
-    def preview_audio(self, mode="general"):
-        """Generates audio to a temp file and plays it."""
-        # Use a temporary file in the current directory or temp dir
-        temp_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), "temp_preview.mp3")
-        
-        cmd = self.get_generation_args(temp_file, mode=mode)
-        if not cmd:
+        if not text or not voice:
+            QMessageBox.warning(self, "Input Error", "Please enter text and select a voice.")
             return
 
-        # Add --play flag
-        cmd.append("--play")
+        self.temp_preview_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), "temp_preview.mp3")
+
+        self.worker = GenerationWorker(text, self.temp_preview_file, voice, pitch, rate, volume)
+        self.worker.finished.connect(self.on_generation_for_preview_finished)
 
         btn = self.preview_btn if mode == "general" else self.char_preview_btn
-        
         btn.setEnabled(False)
-        original_text = btn.text()
         btn.setText("Generating...")
-
-        self.worker = GenerationWorker(cmd)
-        self.worker.finished.connect(lambda success, msg: self.on_preview_finished(success, msg, btn, original_text))
         self.worker.start()
 
-    def on_preview_finished(self, success, msg, btn, original_text):
-            btn.setEnabled(True)
-            btn.setText(original_text)
-            if not success:
-                QMessageBox.critical(self, "Generation Error", f"Failed to generate audio.\n\n{msg}")
+    def on_generation_for_preview_finished(self, success, msg):
+        """Called after generation for preview. If successful, plays the file."""
+        # Re-enable the correct button
+        current_tab_index = self.tabs.currentIndex()
+        btn = self.preview_btn if current_tab_index == 0 else self.char_preview_btn
+        btn.setEnabled(True)
+        btn.setText("Preview (Play)")
+
+        if success:
+            self.start_playback([self.temp_preview_file])
+        else:
+            QMessageBox.critical(self, "Generation Error", f"Failed to generate audio for preview.\n\n{msg}")
 
     def save_audio(self, mode="general"):
         """Opens save dialog and generates audio file."""
@@ -1417,18 +1498,34 @@ class TextToSpeechApp(QMainWindow):
 
         self.settings.setValue("last_save_dir", os.path.dirname(file_path))
 
-        cmd = self.get_generation_args(file_path, mode=mode)
-        if not cmd:
+        # Get generation parameters
+        if mode == "general":
+            voice = self.voice_combo.currentData()
+            pitch = f"{self.pitch_spin.value():+d}Hz"
+            rate = f"{self.rate_spin.value():+d}%"
+            volume = f"{self.vol_spin.value():+d}%"
+        else: # character mode
+            char = self.char_combo.currentData()
+            var_name = self.var_combo.currentText()
+            voice = char.get("ShortName")
+            settings = char.get("Variations", {}).get(var_name, {})
+            pitch = settings.get("Pitch", "+0Hz")
+            rate = settings.get("Rate", "+0%")
+            volume = settings.get("Volume", "+0%")
+
+        if not text or not voice:
+            QMessageBox.warning(self, "Input Error", "Please enter text and select a voice.")
             return
 
-        btn = self.save_btn if mode == "general" else self.char_save_btn
+        self.worker = GenerationWorker(text, file_path, voice, pitch, rate, volume)
+        self.worker.finished.connect(lambda success, msg: self.on_save_finished(success, msg, btn, original_text, file_path))
+
+        btn = self.preview_btn if mode == "general" else self.char_preview_btn
         
         btn.setEnabled(False)
         original_text = btn.text()
-        btn.setText("Saving...")
+        btn.setText("Generating...")
 
-        self.worker = GenerationWorker(cmd)
-        self.worker.finished.connect(lambda success, msg: self.on_save_finished(success, msg, btn, original_text, file_path))
         self.worker.start()
 
     def on_save_finished(self, success, msg, btn, original_text, file_path):

@@ -38,8 +38,9 @@ import os
 import sys
 import args_utils
 
-VOICES_FILE = "/home/user/projects/Text-to-Speech/voices.json"
-SAMPLE_SCRIPT = "/home/user/projects/Text-to-Speech/sample_voices.py"
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+VOICES_FILE = os.path.join(SCRIPT_DIR, "voices.json")
+SAMPLE_SCRIPT = os.path.join(SCRIPT_DIR, "sample_voices.py")
 
 def main():
     parser = args_utils.init_parser("Batch generate samples for a specific gender.")

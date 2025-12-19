@@ -32,11 +32,12 @@
 import json
 import os
 
-FILE_PATH = "/home/user/projects/Text-to-Speech/voices.json"
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+FILE_PATH = os.path.join(SCRIPT_DIR, "voices.json")
 
 def add_ids_to_voices():
-    if not os.path.exists(FILE_PATH):
-        print(f"File not found: {FILE_PATH}")
+    if not os.path.isfile(FILE_PATH):
+        print(f"File not found or is a directory: {FILE_PATH}")
         return
 
     print(f"Reading {FILE_PATH}...")

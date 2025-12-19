@@ -1,33 +1,50 @@
 #!/bin/bash
-set -e
 
-APP_NAME="text-to-speech"
-VERSION="0.1.0"
+# Function to play success sound
+play_success_sound() {
+    if command -v mpg123 &> /dev/null && [ -f "$HOME/projects/audio-files/rpm_actually_built.mp3" ]; then
+        mpg123 "$HOME/projects/audio-files/rpm_actually_built.mp3" >/dev/null 2>&1 &
+    fi
+}
 
-# Auto-increment Release (Resets if VERSION changes)
-RELEASE_FILE=".release_info"
-if [ -f "$RELEASE_FILE" ]; then
-    read -r LAST_VERSION LAST_RELEASE < "$RELEASE_FILE" || true
-fi
-if [ "$VERSION" == "$LAST_VERSION" ] && [ -n "$LAST_RELEASE" ]; then
-    RELEASE=$((LAST_RELEASE + 1))
-else
-    RELEASE="1"
-fi
-echo "$VERSION $RELEASE" > "$RELEASE_FILE"
+# Function to play fail sound
+play_fail_sound() {
+    if command -v mpg123 &> /dev/null && [ -f "$HOME/projects/audio-files/rpm_failed.mp3" ]; then
+        mpg123 "$HOME/projects/audio-files/rpm_failed.mp3" >/dev/null 2>&1 &
+    fi
+}
 
-ARCH="x86_64"
-# BINARY_NAME="${APP_NAME}.bin"
-BINARY_NAME="text-to-speech"
+# Trap to play fail sound on exit if not successful
+SUCCESS=0
+trap 'if [ $SUCCESS -eq 0 ]; then play_fail_sound; fi' EXIT
 
-SIGN_RPMS="1"
-GPG_KEY="8CC02D3C" # Run 'gpg --list-keys' and paste your new Wheelhouser LLC Key ID here
+set -euo pipefail # Exit on error, unset var, or pipe failure
 
 # Check for rpmbuild dependency
 if ! command -v rpmbuild &> /dev/null; then
     echo "Error: 'rpmbuild' is not installed. Please install the 'rpm-build' package."
     exit 1
 fi
+
+APP_NAME="text-to-speech"
+VERSION="0.1.0"
+RELEASE_FILE=".release_info"
+
+# Auto-increment Release (Resets if VERSION changes)
+if [ -f "$RELEASE_FILE" ]; then
+    # shellcheck disable=SC2034
+    read -r LAST_VERSION LAST_RELEASE < "$RELEASE_FILE"
+fi
+if [ "$VERSION" == "${LAST_VERSION:-}" ] && [ -n "${LAST_RELEASE:-}" ]; then
+    RELEASE=$((LAST_RELEASE + 1))
+else
+    RELEASE="1"
+fi
+echo "$VERSION $RELEASE" > "$RELEASE_FILE"
+echo "--- Building version ${VERSION}-${RELEASE} ---"
+
+ARCH="x86_64"
+BINARY_NAME="text-to-speech"
 
 # 1. Compile the binary if it doesn't exist
 DIST_BIN="dist/$BINARY_NAME"
@@ -36,7 +53,7 @@ NEED_BUILD=0
 if [ ! -f "$DIST_BIN" ]; then
     echo "Binary missing. Building..."
     NEED_BUILD=1
-elif [ "text_to_speech.py" -nt "$DIST_BIN" ]; then
+elif [ "src/text_to_speech.py" -nt "$DIST_BIN" ]; then
     echo "Source code changed. Rebuilding..."
     NEED_BUILD=1
 elif [ -n "$(find assets -newer "$DIST_BIN" -print -quit 2>/dev/null)" ]; then
@@ -58,11 +75,15 @@ if [ ! -x "$DIST_BIN" ]; then
 fi
 file "$DIST_BIN" | grep -q "ELF" || echo "Warning: Binary does not look like an ELF executable."
 
-# 2. Prepare RPM Build Directory Structure
+# --- GPG Signing Configuration ---
+SIGN_RPMS="1"
+GPG_KEY="8CC02D3C" # Run 'gpg --list-keys' and paste your new Wheelhouser LLC Key ID here
+
+# --- Setup RPM Build Environment ---
 RPMBUILD_DIR="$PWD/rpmbuild"
-echo "--- Cleaning build environment ---"
+echo "--- Cleaning and setting up RPM build environment in $RPMBUILD_DIR ---"
 rm -rf "$RPMBUILD_DIR"
-mkdir -p $RPMBUILD_DIR/{BUILD,RPMS,SOURCES,SPECS,SRPMS}
+mkdir -p "$RPMBUILD_DIR"/{BUILD,RPMS,SOURCES,SPECS,SRPMS}
 
 # Copy project sources that the spec expects into SOURCES so rpmbuild can access them
 echo "--- Preparing SOURCES ---"
@@ -91,7 +112,6 @@ cp -r "${PWD}/assets" "build/${SOURCE_DIR}/"
 echo "--- Creating Source Tarball ---"
 tar -czf "$RPMBUILD_DIR/SOURCES/text-to-speech-${VERSION}.tar.gz" -C build "${SOURCE_DIR}"
 
-
 # Validate AppStream metadata
 echo "--- Validating AppStream metadata ---"
 if ! command -v appstreamcli &> /dev/null; then
@@ -119,111 +139,53 @@ else
     echo "Warning: 'desktop-file-validate' not found. Skipping validation."
 fi
 
-
-# 3. Build the RPM
-echo "--- Building RPM ---"
+# --- Prepare Spec File ---
+# Use the existing text-to-speech.spec file and modify it
+SPEC_FILE_FINAL="${RPMBUILD_DIR}/SPECS/${APP_NAME}.spec"
+cp "text-to-speech.spec" "$SPEC_FILE_FINAL"
 
 # Ensure changelog exists to avoid warnings
-if ! grep -q "%changelog" text-to-speech.spec; then
-    echo -e "\n%changelog" >> text-to-speech.spec
+if ! grep -q "%changelog" "$SPEC_FILE_FINAL"; then
+    echo -e "\n%changelog" >> "$SPEC_FILE_FINAL"
 fi
 
 # Add new changelog entry for this build
 DATE_STR=$(date "+%a %b %d %Y")
-sed -i "/%changelog/a * $DATE_STR Wheelhouser LLC <steve.rock@wheelhouser.com> - ${VERSION}-${RELEASE}\\n- Automated build" text-to-speech.spec
+sed -i "/%changelog/a * $DATE_STR Wheelhouser LLC <steve.rock@wheelhouser.com> - ${VERSION}-${RELEASE}\\n- Automated build" "$SPEC_FILE_FINAL"
 
 # Update Version and Release in spec file
-sed -i "s/^Version:[[:space:]]*.*/Version:    ${VERSION}/" text-to-speech.spec
-sed -i "s/^Release:[[:space:]]*.*/Release:    ${RELEASE}/" text-to-speech.spec
+sed -i "s/^Version:[[:space:]]*.*/Version:    ${VERSION}/" "$SPEC_FILE_FINAL"
+sed -i "s/^Release:[[:space:]]*.*/Release:    ${RELEASE}/" "$SPEC_FILE_FINAL"
+
+# --- Build the RPM ---
+echo "--- Building RPM using rpmbuild ---"
 rpmbuild -ba \
-    --define "_topdir $RPMBUILD_DIR" \
+    --define "_topdir ${RPMBUILD_DIR}" \
     --define "__os_install_post %{nil}" \
-    text-to-speech.spec
+    "$SPEC_FILE_FINAL"
 
 echo "--- Done! RPMs located at: ---"
 find $RPMBUILD_DIR/RPMS -name "*.rpm"
 
-# Optional GPG signing
-# To enable signing set SIGN_RPMS=1 and optionally set GPG_KEY to your key id/name.
-# Optionally set GPG_HOMEDIR to point to a GnuPG home directory to use for signing.
+# --- GPG Signing ---
 if [ "${SIGN_RPMS:-0}" = "1" ]; then
-    echo "--- Signing RPMs (SIGN_RPMS=1) ---"
-
-    # If user specified a GPG home dir, export GNUPGHOME so gpg/rpmsign use it
-    if [ -n "${GPG_HOMEDIR:-}" ]; then
-        export GNUPGHOME="$GPG_HOMEDIR"
-        echo "Using GNUPGHOME=$GNUPGHOME"
-    fi
-
-    # If rpm --addsign will be used and GPG_KEY is provided, create a temporary ~/.rpmmacros
-    RPMMACROS_BACKUP=""
-    if command -v rpm >/dev/null 2>&1 && command -v rpmsign >/dev/null 2>&1; then
-        # rpmsign available; no need to write rpmmacros
-        :
+    echo "--- Signing RPMs ---"
+    if ! command -v rpmsign &> /dev/null; then
+        echo "Warning: 'rpmsign' not found. Cannot sign packages."
     else
-        # If only rpm --addsign is available, ensure %_gpg_name is set
-        if command -v rpm >/dev/null 2>&1 && [ -n "${GPG_KEY:-}" ]; then
-            if [ -f "$HOME/.rpmmacros" ]; then
-                RPMMACROS_BACKUP="$HOME/.rpmmacros.$(date +%s)"
-                cp -f "$HOME/.rpmmacros" "$RPMMACROS_BACKUP"
-                echo "Backed up existing ~/.rpmmacros to $RPMMACROS_BACKUP"
-            fi
-            cat > "$HOME/.rpmmacros" <<EOF
-%_signature gpg
-%_gpg_name ${GPG_KEY}
-EOF
-            echo "Wrote temporary ~/.rpmmacros with GPG key ${GPG_KEY}"
-            # Ensure we restore rpmmacros on exit
-            restore_rpmmacros() {
-                if [ -n "$RPMMACROS_BACKUP" ] && [ -f "$RPMMACROS_BACKUP" ]; then
-                    mv -f "$RPMMACROS_BACKUP" "$HOME/.rpmmacros"
-                    echo "Restored original ~/.rpmmacros"
-                else
-                    rm -f "$HOME/.rpmmacros"
-                    echo "Removed temporary ~/.rpmmacros"
-                fi
-            }
-            trap restore_rpmmacros EXIT
+        # Ensure ~/.rpmmacros has the GPG key name for signing
+        if [ ! -f "$HOME/.rpmmacros" ] || ! grep -q "%_gpg_name" "$HOME/.rpmmacros"; then
+            echo "Info: Creating temporary ~/.rpmmacros for signing with key ${GPG_KEY}"
+            echo "%_signature gpg" > "$HOME/.rpmmacros"
+            echo "%_gpg_name ${GPG_KEY}" >> "$HOME/.rpmmacros"
         fi
+        
+        find "${RPMBUILD_DIR}"/RPMS/ -name "*.rpm" -exec rpmsign --addsign {} +
+        find "${RPMBUILD_DIR}"/SRPMS/ -name "*.src.rpm" -exec rpmsign --addsign {} +
+        echo "--- Signing complete ---"
     fi
-
-    # Helper to sign a single file
-    sign_file() {
-        local file="$1"
-        echo "Signing $file"
-        if command -v rpmsign >/dev/null 2>&1; then
-            if [ -n "${GPG_KEY:-}" ]; then
-                rpmsign --key-id "$GPG_KEY" --addsign "$file" || echo "rpmsign failed for $file"
-            else
-                rpmsign --addsign "$file" || echo "rpmsign failed for $file"
-            fi
-        elif command -v rpm >/dev/null 2>&1; then
-            echo "Using 'rpm --addsign' (requires ~/.rpmmacros with %_gpg_name set and gpg agent available)"
-            rpm --addsign "$file" || echo "rpm --addsign failed for $file"
-        else
-            echo "No rpm signing tool available (rpmsign/rpm). Skipping signing for $file"
-        fi
-    }
-
-    # Sign binary RPMs
-    find "$RPMBUILD_DIR/RPMS" -type f -name "*.rpm" -print0 | while IFS= read -r -d '' rpm; do
-        sign_file "$rpm"
-    done
-
-    # Sign source RPMs
-    find "$RPMBUILD_DIR/SRPMS" -type f -name "*.src.rpm" -print0 | while IFS= read -r -d '' srpm; do
-        sign_file "$srpm"
-    done
-
-    # If we set a trap to restore rpmmacros, call it now to clean up (trap will also run on exit)
-    if declare -f restore_rpmmacros >/dev/null 2>&1; then
-        restore_rpmmacros
-        trap - EXIT
-    fi
-
-    echo "--- Signing complete ---"
 else
-    echo "SIGN_RPMS not set or not 1; skipping GPG signing step."
+    echo "--- Skipping GPG signing ---"
 fi
 
 echo "=== STEP 5: VERIFY RPM CONTENT ==="
@@ -244,3 +206,17 @@ fi
 echo ""
 echo "=== SUCCESS ==="
 echo "Ready to install."
+
+# --- Finalizing ---
+echo "--- Copying final packages to dist/rpm/ ---"
+mkdir -p dist/rpm
+find "${RPMBUILD_DIR}"/{RPMS,SRPMS} -name "*.rpm" -exec mv {} dist/rpm/ \;
+
+echo "--- Cleaning up build environment ---"
+rm -rf "$RPMBUILD_DIR"
+
+SUCCESS=1
+play_success_sound
+
+echo "--- Success! RPM packages are in dist/rpm/ ---"
+ls -l dist/rpm/

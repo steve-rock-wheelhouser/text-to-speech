@@ -38,7 +38,8 @@ import asyncio
 import edge_tts
 import args_utils
 
-VOICES_FILE = "/home/user/projects/Text-to-Speech/voices.json"
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+VOICES_FILE = os.path.join(SCRIPT_DIR, "voices.json")
 
 async def main():
     parser = args_utils.init_parser("Generate audio samples using Voice IDs.")

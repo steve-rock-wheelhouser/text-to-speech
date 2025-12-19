@@ -39,8 +39,12 @@ import subprocess
 import shutil
 import signal
 import args_utils
+import warnings
 
 child_process = None
+
+# Suppress the specific UserWarning from pygame about pkg_resources
+warnings.filterwarnings("ignore", category=UserWarning, message=".*pkg_resources is deprecated.*")
 
 def signal_handler(sig, frame):
     """Gracefully terminate the child process or pygame."""
@@ -73,9 +77,9 @@ def play_audio(file_path):
     # 1. Try Pygame (Best Python-native option)
     # Requires: pip install pygame
     try:
-        import pygame
         # Suppress pygame welcome message
         os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
+        import pygame
         pygame.mixer.init()
         pygame.mixer.music.load(file_path)
         pygame.mixer.music.play()
