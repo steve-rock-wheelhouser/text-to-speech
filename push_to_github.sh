@@ -33,6 +33,9 @@ init_repo_if_needed() {
 
 init_repo_if_needed
 
+# Increase buffer for large pushes
+git config http.postBuffer 524288000
+
 echo "--- Staging files ---"
 git add .
 
