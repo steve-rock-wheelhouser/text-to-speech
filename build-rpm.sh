@@ -131,7 +131,15 @@ if [ -f "${PWD}/dist/${BINARY_NAME}" ]; then
     cp -f "${PWD}/dist/${BINARY_NAME}" "build/${SOURCE_DIR}/text-to-speech.bin"
 fi
  
-# --- Prepare Icons for RPM ---
+# --- Prepare Icons for RPM: assets/icons/com.wheelhouser.text_to_speech.svg ---
+# --- This ensure that the RDN for: /usr/share/icons/hicolor/scalable/apps is correct ---
+# --- Upon successful builds, a user should be able to:
+# --- ls /usr/share/icons/hicolor/scalable/apps | grep "com.wheelhouser*"
+#       com.wheelhouser.create_icon_files.svg
+#       com.wheelhouser.image_inpainter.svg
+#       com.wheelhouser.image_resizer.svg
+#       com.wheelhouser.text_to_speech.svg
+
 echo "--- Preparing and renaming icons for RPM spec file ---"
 SVG_ICON_SRC="assets/icons/icon.svg"
 PNG_ICON_SRC="assets/icons/icon.png"
@@ -140,6 +148,11 @@ APP_ICON_NAME="com.wheelhouser.text_to_speech"
 mkdir -p "$ICON_DEST_DIR"
 cp "$SVG_ICON_SRC" "$ICON_DEST_DIR/${APP_ICON_NAME}.svg"
 cp "$PNG_ICON_SRC" "$ICON_DEST_DIR/${APP_ICON_NAME}.png"
+
+# --- Prepare Icon files for RPM ---
+echo "--- Copying icon files for RPM spec file ---"
+mkdir -p "build/${SOURCE_DIR}/assets"
+cp -r "${PWD}/assets/icons" "build/${SOURCE_DIR}/assets/"
 
 # Create Tarball
 echo "--- Creating Source Tarball ---"

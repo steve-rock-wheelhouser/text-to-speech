@@ -31,7 +31,47 @@ The Linux Software Center relies on a strict link between the AppStream Metadata
     Icon=com.wheelhouser.text_to_speech
     ```
 
----
+6. **More on Icons:**
+    # Here is what I have in the build-rpm.sh script to ensure that the icon .svg is installed correctly:
+        # --- Prepare Icons for RPM: assets/icons/com.wheelhouser.text_to_speech.svg ---
+        # --- This ensure that the RDN for: /usr/share/icons/hicolor/scalable/apps is correct ---
+        # --- Upon successful builds, a user should be able to:
+        # --- ls /usr/share/icons/hicolor/scalable/apps | grep "com.wheelhouser*"
+        #       com.wheelhouser.create_icon_files.svg
+        #       com.wheelhouser.image_inpainter.svg
+        #       com.wheelhouser.image_resizer.svg
+        #       com.wheelhouser.text_to_speech.svg
+
+        echo "--- Preparing and renaming icons for RPM spec file ---"
+        SVG_ICON_SRC="assets/icons/icon.svg"
+        PNG_ICON_SRC="assets/icons/icon.png"
+        ICON_DEST_DIR="build/${SOURCE_DIR}/assets/icons"
+        APP_ICON_NAME="com.wheelhouser.text_to_speech"
+        mkdir -p "$ICON_DEST_DIR"
+        cp "$SVG_ICON_SRC" "$ICON_DEST_DIR/${APP_ICON_NAME}.svg"
+        cp "$PNG_ICON_SRC" "$ICON_DEST_DIR/${APP_ICON_NAME}.png"
+
+        # --- Prepare Icon files for RPM ---
+        echo "--- Copying icon files for RPM spec file ---"
+        mkdir -p "build/${SOURCE_DIR}/assets"
+        cp -r "${PWD}/assets/icons" "build/${SOURCE_DIR}/assets/"
+        ---
+    
+    # In the .spec file be sure that these are documented like this in the %install section:
+        # Install the scalable SVG icon
+        install -d -m 755 %{buildroot}%{_datadir}/icons/hicolor/scalable/apps
+        install -p -m 644 assets/icons/%{app_id}.svg %{buildroot}%{_datadir}/icons/hicolor/scalable/apps/%{app_id}.svg
+
+        # Also install a high-resolution PNG icon for compatibility
+        install -d -m 755 %{buildroot}%{_datadir}/icons/hicolor/256x256/apps
+        install -p -m 644 assets/icons/%{app_id}.png %{buildroot}%{_datadir}/icons/hicolor/256x256/apps/%{app_id}.png
+    
+    # And they must be referenced in the %files section:
+        %files
+        %{_datadir}/icons/hicolor/scalable/apps/%{app_id}.svg
+        %{_datadir}/icons/hicolor/256x256/apps/%{app_id}.png
+
+
 
 ## Overview
 
