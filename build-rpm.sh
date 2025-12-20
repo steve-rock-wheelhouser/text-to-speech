@@ -77,7 +77,23 @@ DIST_BIN="dist/$BINARY_NAME"
 NEED_BUILD=0
 
 if [ ! -f "$DIST_BIN" ]; then
-    echo "Binary missing. Building..."
+    echo "Binary missing============================================================
+        AppStream Metadata Validation Report                
+============================================================
+[ FAIL ] com.wheelhouser.image_resizer.metainfo.xml
+    /usr/share/metainfo/com.wheelhouser.image_resizer.metainfo.xml: FAILED:
+    • style-invalid         : Content before <ul> is too short [15], at least 20 characters required
+    Validation of files failed
+    HINT: 'style-invalid' usually means a description paragraph is too short (<20 chars).
+
+[ PASS ] com.wheelhouser.image_inpainter.metainfo.xml
+[ PASS ] com.wheelhouser.create_icon_files.metainfo.xml
+[ PASS ] com.wheelhouser.image_remove_background.metainfo.xml
+[ PASS ] com.wheelhouser.text_to_speech.metainfo.xml
+============================================================
+Checked: 5 | Passed: 4 | Failed: 1
+Please fix the errors above before building RPMs.
+. Building..."
     NEED_BUILD=1
 elif [ "src/text_to_speech.py" -nt "$DIST_BIN" ]; then
     echo "Source code changed. Rebuilding..."
