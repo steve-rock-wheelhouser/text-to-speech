@@ -9,7 +9,7 @@ $RemoteUrl = "https://github.com/steve-rock-wheelhouser/text-to-speech.git"
 $GitPath = "C:\Program Files\Git\bin\git.exe"
 
 # Check if branch exists locally
-if (& $GitPath show-ref --verify --quiet "refs/heads/$Branch" 2>$null) {
+if (Test-Path ".git/refs/heads/$Branch") {
     Write-Host "Branch '$Branch' already exists locally. Switching to it."
     & $GitPath checkout $Branch
 } else {
@@ -28,7 +28,7 @@ if (& $GitPath diff --cached --quiet) {
 }
 
 # Ensure remote is set
-if (!(& $GitPath remote get-url $RemoteName 2>$null)) {
+if (!(Test-Path ".git/refs/remotes/$RemoteName")) {
     Write-Host "Adding remote '$RemoteName' -> $RemoteUrl"
     & $GitPath remote add $RemoteName $RemoteUrl
 }
